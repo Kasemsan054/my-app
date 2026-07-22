@@ -3,6 +3,7 @@ import { Prompt } from "next/font/google";
 import "./globals.css";
 import AppShell from "./components/layout/AppShell";
 import { getCurrentUser } from "./lib/auth";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const promptFont = Prompt({
   subsets: ["latin", "thai"],
@@ -26,6 +27,7 @@ export default async function RootLayout({
     <html lang="th" className={`${promptFont.variable} h-full antialiased`}>
       <body className="min-h-full bg-slate-50 flex flex-col font-sans">
         <AppShell currentUser={currentUser}>{children}</AppShell>
+        <SpeedInsights />
       </body>
     </html>
   );
