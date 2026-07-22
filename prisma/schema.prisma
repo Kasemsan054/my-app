@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model User {
+  employeeId     String         @id
+  password       String
+  name           String
+  role           String         @default("STAFF")
+  isFirstLogin   Boolean        @default(true)
+  
+  primaryTickets ReturnTicket[] @relation("PrimaryStaff")
+}
+
+// แยกระบบลูกค้า: บริษัท (Company)
+model Company {
+  id       Int            @id @default(autoincrement())
+  name     String         @unique
+  brands   String[]       @default([])
+  contacts Contact[]      // 1 บริษัท มีได้หลายชื่อผู้ติดต่อ
+  tickets  ReturnTicket[]
+}
+
+// แยกระบบลูกค้า: ชื่อและเบอร์โทร (Contact)
+model Contact {
+  id        Int            @id @default(autoincrement())
+  name      String
+  phone     String
+  companyId Int
+  company   Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  tickets   ReturnTicket[]
+}
+
+model Product {
+  id        Int            @id @default(autoincrement())
+  brand     String
+  model     String
+  tickets   ReturnTicket[]
+}
+
+model ReturnTicket {
+  id                   String   @id @default(uuid())
+  ticket_no            String   @unique
+  receive_date         DateTime
+  status_date          DateTime @default(now())
+  status               String   @default("รอเปิดงานซ่อม")
+  
+  primaryStaffId       String   
+  primaryStaff         User     @relation("PrimaryStaff", fields: [primaryStaffId], references: [employeeId])
+  co_staff_names       String?
+
+  companyId            Int
+  company              Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contactId            Int
+  contact              Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  productId            Int
+  product              Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  serial_no            String?
+  problem_symptom      String?
+  included_accessories String?
+  remark               String?
+  file_path            String?
+  
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Worksheet {
+  id                   String   @id @default(uuid())
+  worksheet_no         String   @unique
+  doc_types            String[] @default([])
+  customer_name        String
+  address              String?
+  province             String?
+  installation_spot    String?
+  service_date         DateTime
+  start_time           String
+  end_time             String
+  product_type         String
+  brand                String
+  model                String
+  serial_no            String?
+  warranty_status      String   @default("อยู่ในประกัน")
+  symptom              String?
+  work_details         String
+  remarks              String?
+  job_status           String[] @default([])
+  technician_name      String
+  contact_person       String?
+  contact_position     String?
+  contact_phone        String?
+  signature_data       String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
