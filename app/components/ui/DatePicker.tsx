@@ -134,7 +134,7 @@ export function DatePickerField({
             ${disabled 
               ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed' 
               : isOpen 
-                ? 'bg-white border-blue-600 ring-4 ring-blue-600/10 text-slate-900 shadow-xs' 
+                ? 'bg-white border-brand-primary ring-4 ring-blue-600/10 text-slate-900 shadow-xs' 
                 : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-slate-300 hover:bg-white'
             }
           `}
@@ -144,7 +144,7 @@ export function DatePickerField({
           </span>
           <CalendarIcon
             size={16}
-            className={`transition-colors shrink-0 ml-2 ${isOpen ? 'text-blue-600' : 'text-slate-400'}`}
+            className={`transition-colors shrink-0 ml-2 ${isOpen ? 'text-brand-primary' : 'text-slate-400'}`}
           />
         </button>
 
@@ -208,9 +208,9 @@ export function DatePickerField({
                     className={`
                       h-8 rounded-xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer relative
                       ${isSelected
-                        ? 'bg-blue-600 text-white shadow-xs'
+                        ? 'bg-brand-primary text-white shadow-xs'
                         : isToday
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200/80 hover:bg-blue-100'
+                          ? 'bg-brand-primary-light text-brand-primary-hover border border-brand-primary-border/80 hover:bg-brand-primary-light'
                           : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                       }
                     `}
@@ -226,7 +226,7 @@ export function DatePickerField({
               <button
                 type="button"
                 onClick={handleSelectToday}
-                className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-bold hover:bg-blue-50 px-2 py-1 rounded-lg transition-colors cursor-pointer"
+                className="flex items-center gap-1 text-brand-primary hover:text-blue-800 font-bold hover:bg-brand-primary-light px-2 py-1 rounded-lg transition-colors cursor-pointer"
               >
                 <RotateCcw size={12} /> วันนี้
               </button>

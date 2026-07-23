@@ -30,7 +30,7 @@ export async function GET(
     const pdfBuffer = await generatePdfBuffer({
       receiveDate: new Date(ticket.receive_date).toLocaleDateString('th-TH'),
       statusDate: new Date(ticket.status_date || ticket.createdAt).toLocaleDateString('th-TH'),
-      companyName: ticket.company.name,
+      companyName: ticket.company.branch && ticket.company.branch !== 'สำนักงานใหญ่' ? `${ticket.company.name} (${ticket.company.branch})` : ticket.company.name,
       contactName: `${ticket.contact.name} (${ticket.contact.phone})`,
       productName: `${ticket.product.brand} - ${ticket.product.model}`,
       serialNo: ticket.serial_no || '',

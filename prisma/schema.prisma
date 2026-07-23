@@ -19,10 +19,13 @@ model User {
 // แยกระบบลูกค้า: บริษัท (Company)
 model Company {
   id       Int            @id @default(autoincrement())
-  name     String         @unique
+  name     String         
+  branch   String         @default("สำนักงานใหญ่")
   brands   String[]       @default([])
   contacts Contact[]      // 1 บริษัท มีได้หลายชื่อผู้ติดต่อ
   tickets  ReturnTicket[]
+
+  @@unique([name, branch])
 }
 
 // แยกระบบลูกค้า: ชื่อและเบอร์โทร (Contact)
@@ -97,4 +100,10 @@ model Worksheet {
   signature_data       String?
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+}
+
+model SystemSetting {
+  key   String @id
+  value String // Stores JSON stringified data
+  updatedAt DateTime @updatedAt
 }

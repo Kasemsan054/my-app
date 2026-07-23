@@ -21,7 +21,7 @@ declare global {
 
 // Re-instantiate if cached global prisma lacks newly added models
 const getPrisma = () => {
-  if (!globalThis.prisma || !('worksheet' in globalThis.prisma)) {
+  if (!globalThis.prisma || !('worksheet' in globalThis.prisma) || !('systemSetting' in globalThis.prisma)) {
     globalThis.prisma = prismaClientSingleton()
   }
   return globalThis.prisma

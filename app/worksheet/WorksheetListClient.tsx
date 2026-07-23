@@ -85,8 +85,8 @@ export default function WorksheetListClient({ initialWorksheets, currentUser }: 
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                 {filtered.map((ws) => (
-                  <tr key={ws.id} className="hover:bg-blue-50/40 transition-colors">
-                    <td className="p-4 px-5 font-bold text-blue-600">
+                  <tr key={ws.id} className="hover:bg-brand-primary-light/40 transition-colors">
+                    <td className="p-4 px-5 font-bold text-brand-primary">
                       {ws.worksheet_no}
                       <div className="text-[10px] font-normal text-slate-400 mt-0.5">
                         {ws.doc_types?.join(', ') || 'ใบงานบริการ'}
@@ -114,7 +114,7 @@ export default function WorksheetListClient({ initialWorksheets, currentUser }: 
                         <button
                           onClick={() => setSelectedItem(ws)}
                           title="ดูรายละเอียดใบงาน"
-                          className="p-2 text-blue-600 hover:bg-blue-100 rounded-xl transition-colors cursor-pointer"
+                          className="p-2 text-brand-primary hover:bg-brand-primary-light rounded-xl transition-colors cursor-pointer"
                         >
                           <Eye size={16} />
                         </button>
@@ -162,7 +162,7 @@ export default function WorksheetListClient({ initialWorksheets, currentUser }: 
               {/* Status Badges */}
               <div className="flex flex-wrap gap-2">
                 {selectedItem.doc_types?.map(dt => (
-                  <span key={dt} className="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-full font-bold">
+                  <span key={dt} className="bg-brand-primary-light text-brand-primary-hover border border-brand-primary-border px-3 py-1 rounded-full font-bold">
                     {dt}
                   </span>
                 ))}
@@ -174,7 +174,7 @@ export default function WorksheetListClient({ initialWorksheets, currentUser }: 
               {/* Customer & Location */}
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
                 <div className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <Building size={16} className="text-blue-600" /> {selectedItem.customer_name}
+                  <Building size={16} className="text-brand-primary" /> {selectedItem.customer_name}
                 </div>
                 {selectedItem.address && <p className="text-slate-600">ที่อยู่: {selectedItem.address} {selectedItem.province}</p>}
                 {selectedItem.installation_spot && <p className="text-slate-600">จุดติดตั้ง: {selectedItem.installation_spot}</p>}
@@ -183,7 +183,7 @@ export default function WorksheetListClient({ initialWorksheets, currentUser }: 
               {/* Equipment */}
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
                 <div className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <Wrench size={16} className="text-blue-600" /> ข้อมูลอุปกรณ์
+                  <Wrench size={16} className="text-brand-primary" /> ข้อมูลอุปกรณ์
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-slate-700">
                   <div><span className="font-bold">ประเภท:</span> {selectedItem.product_type}</div>

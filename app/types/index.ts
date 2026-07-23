@@ -15,6 +15,7 @@ export interface ContactItem {
 export interface CompanyItem {
   id: number
   name: string
+  branch: string
   brands?: string[]
   contacts: ContactItem[]
 }
@@ -38,7 +39,7 @@ export interface ReturnTicketItem {
   remark?: string
   file_path?: string
   createdAt: string
-  company: { id: number; name: string }
+  company: { id: number; name: string; branch: string }
   contact: { id: number; name: string; phone: string }
   product: { id: number; brand: string; model: string }
   primaryStaff: { name: string; employeeId: string }

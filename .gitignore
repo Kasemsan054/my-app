@@ -43,3 +43,8 @@ next-env.d.ts
 /app/generated/prisma
 
 /lib/generated/prisma
+
+# temp scratch files
+temp_output.html
+test-email.ts
+

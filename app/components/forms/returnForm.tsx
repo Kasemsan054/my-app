@@ -67,7 +67,12 @@ export default function ReturnForm({ companies, products, currentUser, staffs = 
     if (res.success && res.ticketNo) {
       setGeneratedTicketNo(res.ticketNo)
       if (res.url) setPreviewUrl(res.url)
-      setToast({ message: `ออกใบแจ้งเปิดงานซ่อมเลขที่ ${res.ticketNo} สำเร็จแล้ว`, type: 'success' })
+      
+      const successMsg = `ออกใบแจ้งเปิดงานซ่อมเลขที่ ${res.ticketNo} สำเร็จแล้ว`
+      setToast({ 
+        message: res.warning ? `${successMsg} ${res.warning}` : successMsg, 
+        type: res.warning ? 'error' : 'success' 
+      })
     } else {
       setToast({ message: res.error || 'เกิดข้อผิดพลาดในการออกใบแจ้งเปิดงานซ่อม', type: 'error' })
     }
@@ -97,8 +102,8 @@ export default function ReturnForm({ companies, products, currentUser, staffs = 
               />
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold text-slate-700">ประเภทเอกสาร</label>
-                <div className="w-full h-11 bg-blue-50 text-blue-800 font-bold px-4 py-2.5 rounded-2xl text-xs border border-blue-100 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+                <div className="w-full h-11 bg-brand-primary-light text-blue-800 font-bold px-4 py-2.5 rounded-2xl text-xs border border-blue-100 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-brand-primary-light0 shrink-0"></span>
                   <span>ใบแจ้งเปิดงานซ่อม</span>
                 </div>
               </div>
@@ -138,10 +143,14 @@ export default function ReturnForm({ companies, products, currentUser, staffs = 
                 value={selectedCompanyId} 
                 onChange={(e) => setSelectedCompanyId(e.target.value)} 
                 required
-                options={companies.map((c: CompanyItem) => ({ 
-                  value: c.id, 
-                  label: c.name
-                }))} 
+                options={companies.map((c: CompanyItem) => {
+                  const hasMultipleBranches = companies.filter(comp => comp.name === c.name).length > 1;
+                  const shouldShowBranch = c.branch && (hasMultipleBranches || c.branch !== 'สำนักงานใหญ่');
+                  return { 
+                    value: c.id, 
+                    label: shouldShowBranch ? `${c.name} - ${c.branch}` : c.name
+                  };
+                })} 
               />
 
               <SelectField 
@@ -161,6 +170,15 @@ export default function ReturnForm({ companies, products, currentUser, staffs = 
                 options={filteredProducts.map((p: ProductItem) => ({ value: p.id, label: `${p.brand} ${p.model}` }))} 
               />
               <InputField label="Serial Number (S/N)" name="serial_no" placeholder="กรอก S/N อุปกรณ์..." />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              <InputField 
+                label="อีเมลผู้รับ (Optional)" 
+                name="recipient_email" 
+                type="email"
+                placeholder="ระบุอีเมลเพื่อส่งสำเนาใบแจ้งเปิดงานซ่อม (หากต้องการ)" 
+              />
             </div>
           </div>
 
@@ -189,7 +207,7 @@ export default function ReturnForm({ companies, products, currentUser, staffs = 
               type="submit" 
               isLoading={isLoading} 
               icon={<Printer size={18} />}
-              className="w-full sm:w-1/2 flex flex-row items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-600/30"
+              className="w-full sm:w-1/2 flex flex-row items-center justify-center gap-2 py-3 bg-brand-primary hover:bg-brand-primary-hover text-white font-bold text-sm shadow-lg shadow-brand-primary/30"
             >
               ออกใบเปิดงานซ่อม
             </Button>
@@ -226,7 +244,7 @@ export default function ReturnForm({ companies, products, currentUser, staffs = 
 
             <div className="flex justify-between items-center text-xs text-slate-500 pt-2">
               <span>สามารถดูเอกสารย้อนหลังได้ที่เมนูประวัติ</span>
-              <Link href="/histories" className="text-blue-600 font-bold hover:underline">
+              <Link href="/histories" className="text-brand-primary font-bold hover:underline">
                 ไปหน้าประวัติเอกสาร →
               </Link>
             </div>

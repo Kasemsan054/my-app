@@ -116,11 +116,11 @@ export function SelectField({
             transition-all duration-200 ease-in-out 
             hover:border-slate-300 hover:bg-white 
             disabled:opacity-50 disabled:bg-slate-100 disabled:cursor-not-allowed 
-            cursor-pointer ${isOpen ? 'bg-white border-blue-600 ring-4 ring-blue-600/10' : ''} ${className}
+            cursor-pointer ${isOpen ? 'bg-white border-brand-primary ring-4 ring-blue-600/10' : ''} ${className}
           `}
         >
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <Search size={15} className={`shrink-0 ${isOpen ? 'text-blue-600' : 'text-slate-400'}`} />
+            <Search size={15} className={`shrink-0 ${isOpen ? 'text-brand-primary' : 'text-slate-400'}`} />
             <input
               ref={inputRef}
               type="text"
@@ -152,7 +152,7 @@ export function SelectField({
             )}
             <ChevronDown
               size={16}
-              className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-blue-600' : ''}`}
+              className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-brand-primary' : ''}`}
             />
           </div>
         </div>
@@ -177,7 +177,7 @@ export function SelectField({
                       className={`
                         w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-all text-left cursor-pointer
                         ${isSelected
-                          ? 'bg-blue-600 text-white font-bold shadow-xs'
+                          ? 'bg-brand-primary text-white font-bold shadow-xs'
                           : 'text-slate-700 font-semibold hover:bg-slate-100/80 hover:text-slate-900'
                         }
                       `}

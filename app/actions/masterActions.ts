@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { requireAuth } from '@/app/lib/auth'
 
 // --- CRUD: Company ---
-export async function createCompany(name: string, brands: string[] = []) {
+export async function createCompany(name: string, branch: string = "สำนักงานใหญ่", brands: string[] = []) {
   await requireAuth()
   if (!name.trim()) return { success: false, error: 'กรุณาระบุชื่อบริษัท' }
 
@@ -13,6 +13,7 @@ export async function createCompany(name: string, brands: string[] = []) {
     await prisma.company.create({
       data: {
         name: name.trim(),
+        branch: branch.trim() || "สำนักงานใหญ่",
         brands: brands
       }
     })
@@ -21,11 +22,11 @@ export async function createCompany(name: string, brands: string[] = []) {
     revalidatePath('/')
     return { success: true }
   } catch {
-    return { success: false, error: 'ชื่อบริษัทนี้มีอยู่ในระบบแล้ว' }
+    return { success: false, error: 'ชื่อบริษัทและสาขานี้มีอยู่ในระบบแล้ว' }
   }
 }
 
-export async function updateCompany(id: number, name: string, brands: string[] = []) {
+export async function updateCompany(id: number, name: string, branch: string, brands: string[] = []) {
   await requireAuth()
   if (!name.trim()) return { success: false, error: 'กรุณาระบุชื่อบริษัท' }
 
@@ -34,6 +35,7 @@ export async function updateCompany(id: number, name: string, brands: string[] =
       where: { id },
       data: {
         name: name.trim(),
+        branch: branch.trim() || "สำนักงานใหญ่",
         brands: brands
       }
     })
@@ -42,7 +44,7 @@ export async function updateCompany(id: number, name: string, brands: string[] =
     revalidatePath('/')
     return { success: true }
   } catch {
-    return { success: false, error: 'ชื่อบริษัทนี้มีอยู่ในระบบแล้ว หรือเกิดข้อผิดพลาด' }
+    return { success: false, error: 'ชื่อบริษัทและสาขานี้มีอยู่ในระบบแล้ว หรือเกิดข้อผิดพลาด' }
   }
 }
 
@@ -178,6 +180,19 @@ export async function deleteProduct(id: number) {
     return { success: true }
   } catch {
     return { success: false, error: 'เกิดข้อผิดพลาดในการลบอุปกรณ์' }
+  }
+}
+
+export async function deleteBrand(brandName: string) {
+  await requireAuth()
+  try {
+    await prisma.product.deleteMany({ where: { brand: brandName } })
+    revalidatePath('/settings')
+    revalidatePath('/master')
+    revalidatePath('/')
+    return { success: true }
+  } catch {
+    return { success: false, error: 'เกิดข้อผิดพลาดในการลบแบรนด์' }
   }
 }
 

@@ -4,7 +4,7 @@ export default function GlobalLoading() {
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 animate-in fade-in duration-150 py-2">
       {/* Top Animated Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-blue-100 overflow-hidden">
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-brand-primary-light overflow-hidden">
         <div className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-400 animate-pulse w-full" />
       </div>
 

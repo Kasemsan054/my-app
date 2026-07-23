@@ -261,7 +261,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
         <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4 flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-base border-b border-slate-100 pb-3">
-              <FileText className="text-blue-600" size={20} /> 1. เอกสารดำเนินการ <span className="text-red-500">*</span>
+              <FileText className="text-brand-primary" size={20} /> 1. เอกสารดำเนินการ <span className="text-red-500">*</span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -273,7 +273,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
                     className={`
                       flex items-center gap-2 p-2.5 rounded-2xl border cursor-pointer transition-all text-xs font-semibold select-none
                       ${isChecked 
-                        ? 'bg-blue-50 border-blue-500 text-blue-900 shadow-xs font-bold' 
+                        ? 'bg-brand-primary-light border-blue-500 text-blue-900 shadow-xs font-bold' 
                         : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                       }
                     `}
@@ -282,7 +282,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
                       type="checkbox"
                       checked={isChecked}
                       onChange={() => handleDocTypeToggle(type)}
-                      className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 shrink-0"
+                      className="w-4 h-4 rounded text-brand-primary focus:ring-blue-500 shrink-0"
                     />
                     <span className="truncate">{type}</span>
                   </label>
@@ -307,7 +307,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
         <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4 flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-base border-b border-slate-100 pb-3">
-              <Calendar className="text-blue-600" size={20} /> 2. วันที่และเวลาเข้าดำเนินการ
+              <Calendar className="text-brand-primary" size={20} /> 2. วันที่และเวลาเข้าดำเนินการ
             </div>
 
             <div className="space-y-4">
@@ -346,7 +346,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
       {/* Section 3: Customer & Location */}
       <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4">
         <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-base border-b border-slate-100 pb-3">
-          <Building className="text-blue-600" size={20} /> 3. ข้อมูลลูกค้าและสถานที่
+          <Building className="text-brand-primary" size={20} /> 3. ข้อมูลลูกค้าและสถานที่
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -390,7 +390,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
       {/* Section 4: Product & Device Info - Standardized Relational Sizing */}
       <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4">
         <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-base border-b border-slate-100 pb-3">
-          <Wrench className="text-blue-600" size={20} /> 4. ข้อมูลสินค้าและอุปกรณ์
+          <Wrench className="text-brand-primary" size={20} /> 4. ข้อมูลสินค้าและอุปกรณ์
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-start">
@@ -440,7 +440,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
               <button
                 type="button"
                 onClick={() => setIsCustomModel(false)}
-                className="absolute right-0 top-0 text-[10px] text-blue-600 font-bold hover:underline cursor-pointer"
+                className="absolute right-0 top-0 text-[10px] text-brand-primary font-bold hover:underline cursor-pointer"
               >
                 ← เลือกจากรายการ
               </button>
@@ -471,7 +471,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
                   value={st}
                   checked={warrantyStatus === st}
                   onChange={(e) => setWarrantyStatus(e.target.value)}
-                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                  className="w-4 h-4 text-brand-primary focus:ring-blue-500"
                 />
                 <span>{st}</span>
               </label>
@@ -484,7 +484,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
       <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-base">
-            <FileText className="text-blue-600" size={20} /> 5. อาการเสียและรายละเอียดการดำเนินงาน
+            <FileText className="text-brand-primary" size={20} /> 5. อาการเสียและรายละเอียดการดำเนินงาน
           </div>
 
           {/* SINGLE Generator Button */}
@@ -527,7 +527,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
       {/* Section 6: Job Status */}
       <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4">
         <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-base border-b border-slate-100 pb-3">
-          <ShieldCheck className="text-blue-600" size={20} /> 6. สรุปสถานะงาน (Job Status)
+          <ShieldCheck className="text-brand-primary" size={20} /> 6. สรุปสถานะงาน (Job Status)
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -560,7 +560,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
       {/* Section 7: Technician & Signature */}
       <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
         <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-base border-b border-slate-100 pb-3">
-          <UserCheck className="text-blue-600" size={20} /> 7. ผู้ลงนามและข้อมูลติดต่อ
+          <UserCheck className="text-brand-primary" size={20} /> 7. ผู้ลงนามและข้อมูลติดต่อ
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -638,7 +638,7 @@ export default function WorksheetForm({ currentUser, products = [] }: WorksheetF
         <button
           type="submit"
           disabled={loading}
-          className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl shadow-xl shadow-blue-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer text-sm disabled:opacity-50 transform hover:-translate-y-0.5"
+          className="w-full sm:w-auto px-8 py-4 bg-brand-primary hover:bg-brand-primary-hover text-white font-extrabold rounded-2xl shadow-xl shadow-brand-primary/30 transition-all flex items-center justify-center gap-2 cursor-pointer text-sm disabled:opacity-50 transform hover:-translate-y-0.5"
         >
           {loading ? <RefreshCw className="animate-spin" size={18} /> : <Save size={18} />}
           {loading ? 'กำลังบันทึกข้อมูล...' : 'บันทึกใบงาน Worksheet'}

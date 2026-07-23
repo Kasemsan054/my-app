@@ -4,6 +4,8 @@ import prisma from '@/app/lib/prisma'
 import { generatePdfBuffer } from '@/app/lib/pdfGenerator'
 import { revalidatePath } from 'next/cache'
 import { requireAuth } from '@/app/lib/auth'
+import { uploadAttachment, sendReturnTicketEmail } from '@/app/lib/tbsEmail'
+import { getEmailConfig } from '@/app/actions/emailConfigActions'
 
 export async function submitReturnTicket(formData: FormData) {
   try {
@@ -18,6 +20,11 @@ export async function submitReturnTicket(formData: FormData) {
     const includedAccessories = (formData.get('included_accessories') as string) || ''
     const remark = (formData.get('remark') as string) || ''
     const coStaffNames = (formData.get('co_staff_names') as string) || ''
+    const recipientEmail = (formData.get('recipient_email') as string) || ''
+
+    // Load email config from DB (with env fallback)
+    const emailConfig = await getEmailConfig()
+    const effectiveRecipient = recipientEmail || emailConfig.defaultRecipientEmail
 
     if (!receiveDateStr || !companyId || !contactId || !productId) {
       return { success: false, error: "กรุณากรอกข้อมูลสำคัญให้ครบถ้วน" }
@@ -74,10 +81,50 @@ export async function submitReturnTicket(formData: FormData) {
       }
     })
 
+    // ส่งอีเมลถ้ามีการระบุ
+    let emailWarning = ''
+    if (effectiveRecipient) {
+      try {
+        const pdfBuffer = await generatePdfBuffer({
+          receiveDate: new Date(receiveDateStr).toLocaleDateString('th-TH'),
+          statusDate: new Date().toLocaleDateString('th-TH'),
+          companyName: company.branch && company.branch !== 'สำนักงานใหญ่' ? `${company.name} (${company.branch})` : company.name,
+          contactName: `${contact.name} (${contact.phone})`,
+          productName: `${product.brand} - ${product.model}`,
+          serialNo,
+          problemSymptom,
+          includedAccessories,
+          remark,
+          staffName: primaryStaff.name,
+          coStaffNames: coStaffNames
+        })
+        const attachmentUuid = await uploadAttachment(Buffer.from(pdfBuffer), `${ticketNo}.pdf`)
+        await sendReturnTicketEmail(
+          effectiveRecipient,
+          `ใบแจ้งเปิดงานซ่อม ${ticketNo} - ${company.branch && company.branch !== 'สำนักงานใหญ่' ? `${company.name} (${company.branch})` : company.name}`,
+          attachmentUuid,
+          {
+            DATE: new Date(receiveDateStr).toLocaleDateString('th-TH'),
+            COMPANY_NAME: company.branch && company.branch !== 'สำนักงานใหญ่' ? `${company.name} (${company.branch})` : company.name,
+            CONTACT_INFO: `${contact.name} (${contact.phone})`,
+            PRODUCT: `${product.brand} - ${product.model} (S/N: ${serialNo})`,
+            SYMPTOM: problemSymptom,
+            OTHER: includedAccessories || "-",
+            STATUS: "รอเปิดงานซ่อม"
+          },
+          { fromEmail: emailConfig.fromEmail, fromName: emailConfig.fromName }
+        )
+      } catch (emailError: unknown) {
+        console.error("Failed to send email:", emailError)
+        const err = emailError as Error
+        emailWarning = ` (ระบบส่งอีเมลไม่สำเร็จ: ${err.message})`
+      }
+    }
+
     revalidatePath('/')
     revalidatePath('/histories')
     
-    return { success: true, url: filePath, ticketNo }
+    return { success: true, url: filePath, ticketNo, warning: emailWarning }
 
   } catch (error: unknown) {
     console.error("Submit Return Error:", error)
@@ -118,7 +165,7 @@ export async function previewReturnTicket(formData: FormData) {
     const pdfBuffer = await generatePdfBuffer({
       receiveDate: receiveDateStr ? new Date(receiveDateStr).toLocaleDateString('th-TH') : new Date().toLocaleDateString('th-TH'),
       statusDate: new Date().toLocaleDateString('th-TH'),
-      companyName: company.name,
+      companyName: company.branch && company.branch !== 'สำนักงานใหญ่' ? `${company.name} (${company.branch})` : company.name,
       contactName: `${contact.name} (${contact.phone})`,
       productName: `${product.brand} - ${product.model}`,
       serialNo,

@@ -1,10 +1,49 @@
 @import "tailwindcss";
 
+/* 
+  Centralized Theme Variables 
+  Change primary/secondary colors here to apply across the entire project 
+*/
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
-  --primary: #0f172a;
-  --accent: #2563eb;
+  
+  /* Brand Primary (Default: Blue) */
+  --brand-primary: #2563eb;
+  --brand-primary-light: #eff6ff;
+  --brand-primary-hover: #1d4ed8;
+  --brand-primary-border: #bfdbfe;
+  --brand-primary-text: #1d4ed8;
+
+  /* Brand Secondary (Default: Indigo) */
+  --brand-secondary: #4f46e5;
+  --brand-secondary-light: #eef2ff;
+  --brand-secondary-hover: #4338ca;
+  --brand-secondary-border: #c7d2fe;
+  --brand-secondary-text: #4338ca;
+
+  /* Brand Accent (Default: Amber for highlights) */
+  --brand-accent: #f59e0b;
+  --brand-accent-light: #fffbeb;
+  --brand-accent-text: #b45309;
+}
+
+@theme {
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-light: var(--brand-primary-light);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-primary-border: var(--brand-primary-border);
+  --color-brand-primary-text: var(--brand-primary-text);
+
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-secondary-light: var(--brand-secondary-light);
+  --color-brand-secondary-hover: var(--brand-secondary-hover);
+  --color-brand-secondary-border: var(--brand-secondary-border);
+  --color-brand-secondary-text: var(--brand-secondary-text);
+
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-light: var(--brand-accent-light);
+  --color-brand-accent-text: var(--brand-accent-text);
 }
 
 * {

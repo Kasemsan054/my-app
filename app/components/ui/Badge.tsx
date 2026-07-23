@@ -17,8 +17,8 @@ export function StatusBadge({ status, className = '' }: BadgeProps) {
       dotColor = 'bg-amber-500 animate-pulse'
       break
     case 'กำลังตรวจเช็ค/ซ่อม':
-      style = 'bg-blue-50 text-blue-800 border-blue-200/60'
-      dotColor = 'bg-blue-500 animate-pulse'
+      style = 'bg-brand-primary-light text-blue-800 border-brand-primary-border/60'
+      dotColor = 'bg-brand-primary-light0 animate-pulse'
       break
     case 'รอส่งคืนลูกค้า':
       style = 'bg-purple-50 text-purple-800 border-purple-200/60'

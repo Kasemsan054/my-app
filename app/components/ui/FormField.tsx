@@ -17,7 +17,7 @@ export function InputField({ label, className = '', ...props }: InputProps) {
           px-4 py-2.5 rounded-2xl text-xs outline-none shadow-2xs 
           transition-all duration-200 ease-in-out 
           hover:border-slate-300 hover:bg-white 
-          focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 
+          focus:bg-white focus:border-brand-primary focus:ring-4 focus:ring-blue-600/10 
           disabled:opacity-50 disabled:bg-slate-100 disabled:cursor-not-allowed 
           ${className}
         `}
@@ -44,7 +44,7 @@ export function TextareaField({ label, className = '', ...props }: TextareaProps
           p-3 rounded-2xl text-xs outline-none shadow-2xs 
           transition-all duration-200 ease-in-out 
           hover:border-slate-300 hover:bg-white 
-          focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 
+          focus:bg-white focus:border-brand-primary focus:ring-4 focus:ring-blue-600/10 
           disabled:opacity-50 disabled:bg-slate-100 disabled:cursor-not-allowed 
           ${className}
         `}

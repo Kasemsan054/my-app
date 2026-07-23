@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { Menu, PanelLeftOpen, PanelLeftClose, Calendar, Clock } from 'lucide-react'
+import { Menu, Calendar, Clock } from 'lucide-react'
+import { Tooltip } from '@/app/components/ui'
 
 interface NavbarProps {
   currentUser?: {
@@ -19,7 +20,7 @@ const THAI_MONTHS = [
   'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
 ]
 
-export default function Navbar({ onOpenSidebar, isCollapsed, onToggleCollapse }: NavbarProps) {
+export default function Navbar({ onOpenSidebar }: NavbarProps) {
   const [dateTimeStr, setDateTimeStr] = useState<string>('')
 
   useEffect(() => {
@@ -41,41 +42,32 @@ export default function Navbar({ onOpenSidebar, isCollapsed, onToggleCollapse }:
   }, [])
 
   return (
-    <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-4 lg:px-6 py-3 flex items-center justify-between shadow-xs">
-      {/* Left Column: Mobile & Desktop Sidebar Toggles */}
-      <div className="flex items-center gap-3 min-w-[60px] sm:min-w-[120px]">
+    <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-3 lg:px-6 py-3 flex items-center justify-between shadow-xs">
+      {/* Left Column: Mobile Sidebar Toggle */}
+      <div className="flex items-center w-10 sm:w-32 justify-start shrink-0">
         {/* Mobile menu button */}
-        <button
-          onClick={onOpenSidebar}
-          className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl lg:hidden transition-colors cursor-pointer"
-          aria-label="Open sidebar"
-        >
-          <Menu size={22} />
-        </button>
-
-        {/* Desktop sidebar toggle button */}
-        {onToggleCollapse && (
+        <Tooltip content="เปิดเมนู" position="bottom" wrapperClassName="lg:hidden">
           <button
-            onClick={onToggleCollapse}
-            className="hidden lg:flex p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
-            title={isCollapsed ? "ขยาย Sidebar" : "ย่อ Sidebar"}
+            onClick={onOpenSidebar}
+            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer shrink-0"
+            aria-label="Open sidebar"
           >
-            {isCollapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
+            <Menu size={22} />
           </button>
-        )}
+        </Tooltip>
       </div>
 
       {/* Center Column: Live Date & Time Badge */}
-      <div className="flex items-center justify-center flex-1 mx-2">
-        <div className="bg-slate-100/90 border border-slate-200/80 px-4 py-1.5 rounded-full text-xs font-bold text-slate-700 flex items-center gap-2 shadow-2xs">
-          <Calendar size={14} className="text-blue-600 shrink-0" />
-          <span className="font-mono text-slate-800">{dateTimeStr || 'กำลังโหลดเวลา...'}</span>
-          <Clock size={14} className="text-indigo-600 shrink-0 hidden sm:inline" />
+      <div className="flex items-center justify-center flex-1 mx-1 sm:mx-2">
+        <div className="bg-slate-100/90 border border-slate-200/80 px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold text-slate-700 flex items-center gap-1.5 sm:gap-2 shadow-2xs whitespace-nowrap">
+          <Calendar size={14} className="text-brand-primary shrink-0" />
+          <span className="font-mono text-slate-800 text-[11px] sm:text-xs">{dateTimeStr || 'กำลังโหลดเวลา...'}</span>
+          <Clock size={14} className="text-brand-secondary shrink-0 hidden sm:inline" />
         </div>
       </div>
 
       {/* Right Column Spacer for Visual Balance */}
-      <div className="min-w-[60px] sm:min-w-[120px] hidden sm:block" />
+      <div className="w-10 sm:w-32 shrink-0" />
     </header>
   )
 }

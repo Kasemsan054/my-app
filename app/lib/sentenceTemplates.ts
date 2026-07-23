@@ -1,11 +1,23 @@
+export interface DeviceItem {
+  serialNo: string
+  symptom?: string
+  resolution?: string
+  mileage?: string
+  isMileageUnknown?: boolean
+  oldSerial?: string
+  newSerial?: string
+}
+
 export interface SentenceData {
   deviceType: string
   brand: string
   model: string
+  quantity?: number
   serialNo: string
   symptom: string
   resolution: string
   mileage?: string
+  isMileageUnknown?: boolean
   oldSerial?: string
   newSerial?: string
   replacedPartName?: string
@@ -13,9 +25,17 @@ export interface SentenceData {
   firmwareOld?: string
   firmwareNew?: string
   customNotes?: string
+
+  // Multi-device listing array
+  devices?: DeviceItem[]
+
+  // Contact info
+  contactName?: string
+  contactPosition?: string
+  contactPhone?: string
 }
 
-export type TemplateId = 'printhead' | 'part_replacement' | 'maintenance' | 'firmware' | 'custom'
+export type TemplateId = 'multi_device' | 'printhead' | 'part_replacement' | 'maintenance' | 'firmware' | 'custom'
 
 export interface SentenceTemplate {
   id: TemplateId
@@ -26,9 +46,15 @@ export interface SentenceTemplate {
 
 export const TEMPLATES: SentenceTemplate[] = [
   {
+    id: 'multi_device',
+    name: 'เข้าตรวจสอบหลายเครื่อง (Multi-Device)',
+    description: 'สำหรับงานเข้าตรวจสอบอุปกรณ์หลายเครื่อง พร้อมระบุ S/N, อาการเสียของแต่ละเครื่อง และข้อมูลผู้ติดต่อ',
+    badge: 'หลายเครื่อง'
+  },
+  {
     id: 'printhead',
     name: 'ตรวจเช็ค & เปลี่ยนหัวพิมพ์',
-    description: 'เหมาะสำหรับงานซ่อม/เปลี่ยนหัวพิมพ์ Barcode Printer (มีระยะหัวพิมพ์ M. และ S/N หัวพิมพ์ใหม่-เก่า)',
+    description: 'เหมาะสำหรับงานซ่อม/เปลี่ยนหัวพิมพ์ Barcode Printer (รองรับระยะ M. หรือไม่สามารถดูระยะได้ และ S/N)',
     badge: 'หัวพิมพ์ (Printhead)'
   },
   {
@@ -52,8 +78,8 @@ export const TEMPLATES: SentenceTemplate[] = [
   {
     id: 'custom',
     name: 'แบบกำหนดเองอิสระ',
-    description: 'ปรับแต่งข้อความและหัวข้อได้ตามความต้องการ',
-    badge: 'กำหนดเอง'
+    description: 'หน้าเปล่าสำหรับพิมพ์และเรียบเรียงข้อความอิสระด้วยตนเอง',
+    badge: 'พิมพ์อิสระ'
   }
 ]
 
@@ -105,7 +131,7 @@ export const BRAND_MODELS_MAP: Record<string, string[]> = {
   'Sato': ['CL4NX Plus', 'PW208NX', 'FX3-LX', 'CG408', 'WS408'],
   'Bixolon': ['SLP-TX400', 'SRP-350III', 'SPP-R200III', 'XD5-40t'],
   'Epson': ['TM-T82III', 'TM-U220B', 'TM-T88VI', 'LQ-310', 'L3250'],
-  'HPRT': ['TP808', 'HT300', 'LPQ58', 'POS80'],
+  'HPRT': ['TP808', 'HT300', 'LPQ58', 'POS80', 'HT800'],
   'Datalogic': ['QuickScan QW2100', 'Gryphon GD4500', 'Powerscan PD9530'],
   'Fujitsu': ['fi-7160', 'fi-8170', 'fi-7260']
 }
@@ -147,6 +173,8 @@ export function buildBrandModelsMap(products?: Array<{ brand: string; model: str
 export const BRAND_PRESETS = Object.keys(BRAND_MODELS_MAP)
 
 export const SYMPTOM_PRESETS = [
+  'ไฟเข้าบ้าง ไม่เข้าบ้าง',
+  'ปรินกระโดดในบางครั้ง',
   'หัวพิมพ์ขาด',
   'หัวพิมพ์เป็นเส้น',
   'พิมพ์ไม่ออก / ตัวหนังสือขาดหาย',
@@ -167,18 +195,72 @@ export const RESOLUTION_PRESETS = [
 ]
 
 export function generateSentence(templateId: TemplateId, data: SentenceData): string {
+  if (templateId === 'custom') {
+    return data.customNotes || ''
+  }
+
   const deviceHeader = [data.deviceType, data.brand, data.model].filter(Boolean).join(' ')
-  const serialLine = data.serialNo ? `S/N:  ${data.serialNo}` : ''
+  
+  // Helper to append contact info
+  const appendContact = (lines: string[]) => {
+    if (data.contactName || data.contactPosition || data.contactPhone) {
+      lines.push('')
+      lines.push('ข้อมูลผู้ติดต่อ')
+      if (data.contactName) lines.push(`ชื่อ: ${data.contactName}`)
+      if (data.contactPosition) lines.push(`ตำแหน่ง: ${data.contactPosition}`)
+      if (data.contactPhone) lines.push(`โทรฯ: ${data.contactPhone}`)
+    }
+  }
+
+  const serialLine = data.serialNo ? `S/N: ${data.serialNo}` : ''
 
   switch (templateId) {
+    case 'multi_device': {
+      const devicesList = (data.devices && data.devices.length > 0) 
+        ? data.devices 
+        : [{ serialNo: data.serialNo, symptom: data.symptom, resolution: data.resolution }]
+
+      const lines: string[] = []
+      const totalCount = devicesList.length
+      lines.push(`ดำเนินการเข้าตรวจสอบเครื่อง ${deviceHeader || '[ประเภท/ยี่ห้อ/รุ่น]'} จำนวน ${totalCount} เครื่อง ได้แก่`)
+      lines.push('')
+
+      devicesList.forEach((dev, idx) => {
+        lines.push(`${idx + 1}. S/N: ${dev.serialNo || '-'}`)
+        if (dev.symptom) {
+          lines.push(`   อาการเสีย: ${dev.symptom}`)
+        }
+        if (dev.resolution) {
+          lines.push(`   การแก้ไข: ${dev.resolution}`)
+        }
+        if (dev.isMileageUnknown) {
+          lines.push(`   ระยะหัวพิมพ์: (ไม่สามารถตรวจสอบระยะสะสมได้)`)
+        } else if (dev.mileage) {
+          lines.push(`   ระยะหัวพิมพ์: ${dev.mileage} M.`)
+        }
+        if (dev.oldSerial || dev.newSerial) {
+          if (dev.oldSerial) lines.push(`   - S/N หัวพิมพ์เก่า: ${dev.oldSerial}`)
+          if (dev.newSerial) lines.push(`   - S/N หัวพิมพ์ใหม่: ${dev.newSerial}`)
+        }
+        if (idx < devicesList.length - 1) {
+          lines.push('')
+        }
+      })
+
+      appendContact(lines)
+      return lines.join('\n').trim()
+    }
+
     case 'printhead': {
       const lines: string[] = []
       lines.push(`ดำเนินการเข้าตรวจสอบเครื่อง ${deviceHeader || '[ประเภท/ยี่ห้อ/รุ่น]'}`)
       if (serialLine) lines.push(serialLine)
-      lines.push(`อาการ: ${data.symptom || '-'}`)
-      lines.push(`การแก้ไข: ${data.resolution || '-'}`)
+      if (data.symptom) lines.push(`อาการ: ${data.symptom}`)
+      if (data.resolution) lines.push(`การแก้ไข: ${data.resolution}`)
       
-      if (data.mileage) {
+      if (data.isMileageUnknown) {
+        lines.push(`ระยะหัวพิมพ์: (ไม่สามารถตรวจสอบระยะสะสมได้)`)
+      } else if (data.mileage) {
         lines.push(`ระยะหัวพิมพ์: ${data.mileage} M.`)
       }
       
@@ -188,6 +270,7 @@ export function generateSentence(templateId: TemplateId, data: SentenceData): st
         if (data.newSerial) lines.push(`- S/N: ${data.newSerial} (หัวพิมพ์ใหม่)`)
       }
 
+      appendContact(lines)
       return lines.join('\n')
     }
 
@@ -197,7 +280,7 @@ export function generateSentence(templateId: TemplateId, data: SentenceData): st
       if (serialLine) lines.push(serialLine)
       if (data.symptom) lines.push(`อาการ: ${data.symptom}`)
       if (data.replacedPartName) lines.push(`อะไหล่ที่เปลี่ยน: ${data.replacedPartName}`)
-      lines.push(`การแก้ไข: ${data.resolution || '-'}`)
+      if (data.resolution) lines.push(`การแก้ไข: ${data.resolution}`)
 
       if (data.oldSerial || data.newSerial) {
         lines.push(`ซีเรียลอะไหล่:`)
@@ -209,6 +292,7 @@ export function generateSentence(templateId: TemplateId, data: SentenceData): st
         lines.push(`ผลการทดสอบ: ${data.testResult}`)
       }
 
+      appendContact(lines)
       return lines.join('\n')
     }
 
@@ -216,10 +300,12 @@ export function generateSentence(templateId: TemplateId, data: SentenceData): st
       const lines: string[] = []
       lines.push(`ดำเนินการเข้าตรวจสอบและบำรุงรักษาเครื่อง ${deviceHeader || '[ประเภท/ยี่ห้อ/รุ่น]'}`)
       if (serialLine) lines.push(serialLine)
+      if (data.symptom) lines.push(`อาการเสีย / สาเหตุที่รับแจ้ง: ${data.symptom}`)
       lines.push(`การดำเนินการ: ${data.resolution || 'ทำความสะอาดหัวพิมพ์, ลูกกลิ้ง และทดสอบระบบสั่งพิมพ์'}`)
       if (data.testResult) lines.push(`ผลการทดสอบ: ${data.testResult}`)
       if (data.customNotes) lines.push(`หมายเหตุ: ${data.customNotes}`)
 
+      appendContact(lines)
       return lines.join('\n')
     }
 
@@ -233,19 +319,7 @@ export function generateSentence(templateId: TemplateId, data: SentenceData): st
       lines.push(`การดำเนินการ: ${data.resolution || 'อัปเดตเฟิร์มแวร์ คาลิเบรทเซ็นเซอร์ และทดสอบการทำงาน'}`)
       if (data.testResult) lines.push(`ผลการทดสอบ: ${data.testResult}`)
 
-      return lines.join('\n')
-    }
-
-    case 'custom':
-    default: {
-      const lines: string[] = []
-      lines.push(`ดำเนินการเข้าตรวจสอบเครื่อง ${deviceHeader || '[ประเภท/ยี่ห้อ/รุ่น]'}`)
-      if (serialLine) lines.push(serialLine)
-      if (data.symptom) lines.push(`อาการ: ${data.symptom}`)
-      if (data.resolution) lines.push(`การแก้ไข: ${data.resolution}`)
-      if (data.mileage) lines.push(`ระยะการใช้งาน: ${data.mileage} M.`)
-      if (data.customNotes) lines.push(`รายละเอียดเพิ่มเติม: ${data.customNotes}`)
-      
+      appendContact(lines)
       return lines.join('\n')
     }
   }

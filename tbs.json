@@ -1,0 +1,1739 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ThaibulkSMS API Reference",
+    "description": "เอกสารอ้างอิงสำหรับ API ของ ThaibulkSMS เลือก API ได้จากเมนูด้านซ้าย:\n\n- **SMS API** — ส่งข้อความ SMS และตรวจสอบเครดิต SMS\n- **Email API** — ส่งอีเมลจากเทมเพลต ตรวจสอบเครดิตอีเมล และจัดการไฟล์แนบ\n- **OTP API** — ขอและยืนยันรหัส OTP ผ่านช่องทาง SMS และอีเมล\n\nทุกคำขอใช้การยืนยันตัวตนแบบ HTTP Basic Auth ด้วย API Key และ API Secret ของคุณ",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "sms-messaging",
+      "description": "> **Base URL:** `https://api-v2.thaibulksms.com/`\n\nด้วย Thaibulk SMS API คุณสามารถส่ง SMS จากบัญชีของคุณไปยังผู้รับได้ โดยต้องระบุหมายเลขในรูปแบบ E.164 หรือรูปแบบเบอร์มือถือไทย",
+      "x-displayName": "SMS"
+    },
+    {
+      "name": "sms-errors",
+      "x-displayName": "Error Codes",
+      "description": "เมื่อเกิดข้อผิดพลาด ระบบจะตอบกลับในรูปแบบดังนี้:\n\n```json\n{\n  \"error\": {\n    \"code\": <number>,\n    \"name\": \"<NAME>\",\n    \"description\": \"<message>\"\n  }\n}\n```\n\n| Error no. | HTTP status | Error code | Description |\n| --- | --- | --- | --- |\n| 0 | 200 | `NO_ERROR` | No error. |\n| 0 | 201 | `NO_ERROR` | No error. |\n| 1 | 500 | `ERROR_SYSTEM_FAILURE` | System Failure. |\n| 2 | 405 | `ERROR_METHOD_NOT_ALLOWED` | Method Not Allowed. |\n| 3 | 404 | `ERROR_NOT_FOUND` | Not Found. |\n| 4 | 500 | `ERROR_DB_FAILURE` | Database Failure. |\n| 5 | 500 | `ERROR_DB_RECOVERING` | Database Recovering. |\n| 6 | 500 | `ERROR_DB_RECOVERED_FAIL` | Database Recovered Failed. |\n| 7 | 500 | `ERROR_QUEUE_RECOVERING` | Queue Recovering. |\n| 8 | 500 | `ERROR_QUEUE_FAILURE` | Queue Failure. |\n| 9 | 500 | `ERROR_QUEUE_RECOVERED_FAIL` | Queue Recovered Failed. |\n| 10 | 500 | `ERROR_CACHE_FAILURE` | Cache Failure. |\n| 11 | 500 | `ERROR_CACHE_RECOVERING` | Cache Recovering. |\n| 12 | 500 | `ERROR_CACHE_RECOVERED_FAIL` | Cache Recovered Failed. |\n| 13 | 500 | `ERROR_CONNECTION_TIMEOUT` | Connection Timeout. |\n| 14 | 500 | `ERROR_CONNECTION_REFUSED` | Connection Refused. |\n| 15 | 500 | `ERROR_CONNECTION_FAILURE` | Connection Failure. |\n| 50 | 500 | `ERROR_JSON_MARSHAL` | JSON Marshal failed. |\n| 51 | 500 | `ERROR_JSON_UNMARSHAL` | JSON Unmarshal failed. |\n| 52 | 500 | `ERROR_GIN_VARIABLE_NOT_FOUND` | GIN variable not found. |\n| 53 | 500 | `ERROR_QUERY_STRING` | Querystring values failed. |\n| 54 | 500 | `ERROR_MAKE_REQUEST` | Cannot make request for request to client. |\n| 55 | 500 | `ERROR_IO_BODY` | Cannot read response from client. |\n| 56 | 400 | `ERROR_FORM` | Form is invalid. |\n| 100 | 401 | `ERROR_AUTHENTICATION_FAILED` | Authentication failed. |\n| 101 | 403 | `ERROR_API_KEY_SUSPENDED` | This API key has been suspended. |\n| 102 | 403 | `ERROR_IP_SUSPENDED` | This IP has been suspended. |\n| 103 | 500 | `ERROR_IP_WHITELIST` | IP Whitelist failed. |\n| 104 | 403 | `ERROR_IP_NOT_ALLOWED` | This IP is not allowed. |\n| 105 | 404 | `ERROR_USER_NOT_FOUND` | User not found. |\n| 106 | 403 | `ERROR_USER_BLOCKED` | User has been blocked. |\n| 107 | 404 | `ERROR_USER_PROFILE_NOT_FOUND` | User profile not found. |\n| 108 | 403 | `ERROR_USER_TRIAL` | You are a trial member that can use the registered phone number only. |\n| 109 | 400 | `ERROR_FORCE` | Force is invalid. |\n| 110 | 400 | `ERROR_SENDER` | Sender is invalid. |\n| 111 | 404 | `ERROR_SENDER_NOT_FOUND` | Sender not found. |\n| 112 | 400 | `ERROR_MESSAGE` | The message is invalid. |\n| 113 | 400 | `ERROR_MESSAGE_TOO_LONG` | The message is too long. |\n| 114 | 400 | `ERROR_MSISDN` | MSISDN is invalid. |\n| 115 | 400 | `ERROR_MSISDN_EXCEEDED_LIMIT` | MSISDN exceeded the limit. |\n| 116 | 423 | `ERROR_INSUFFICIENT_CREDIT` | Insufficient credit. |\n| 118 | 400 | `ERROR_CALLBACK_URL` | Callback Url is invalid. |\n| 119 | 400 | `ERROR_CALLBACK_METHOD` | You can choose callback method are GET, POST or PUT method. |\n| 120 | 400 | `ERROR_SCHEDULED_DELIVERY` | Scheduled delivery must be ISO-8601 (RFC-3339) format. |\n| 121 | 400 | `ERROR_SCHEDULED_DELIVERY_TOO_FAR` | Scheduled delivery must be less than 1 year. |\n| 122 | 400 | `ERROR_SCHEDULED_DELIVERY_TIMEZONE` | Scheduled delivery must be used Asia/Bangkok timezone (+07:00). |\n| 123 | 400 | `ERROR_TAGS` | Tags is invalid. |\n| 124 | 400 | `ERROR_TAGS_EXCEEDED_LENGTH` | Tags exceeded the limit. |\n| 125 | 500 | `ERROR_TAGS_CREATE` | Cannot create new tags. |\n| 126 | 400 | `ERROR_TAGS_EXIST` | Tags exist. |\n| 128 | 403 | `ERROR_API_KEY_DISABLED` | This API key has been disabled. |\n| 131 | 500 | `ERROR_SCHEDULED_DELIVERY_CREATE` | Cannot create scheduled delivery. |\n| 132 | 500 | `ERROR_PUBLISH_OUTBOUND` | Cannot publish outbound SMS data. |\n| 133 | 500 | `ERROR_API_KEY_DELETE_CACHE` | Cannot delete cache of api_key. |\n| 134 | 404 | `ERROR_ACC_ID_NOT_FOUND` | Acc ID not found. |\n| 135 | 500 | `ERROR_USER_TEMPLATE` | User template failure. |\n| 136 | 400 | `ERROR_USER_TEMPLATE_NOT_MATCH` | User template not match. |\n| 137 | 400 | `ERROR_TTL_FORMAT` | ttl expire must be HH:mm format. |\n| 138 | 400 | `ERROR_TTL` | Expiration period is invalid, expire time must be more than 5 minutes and not more than 11 hours. |"
+    },
+    {
+      "name": "email-messaging",
+      "x-displayName": "Email",
+      "description": "> **Base URL:** `https://email-api.thaibulksms.com`\n\nการส่งอีเมลและการจัดการเครดิต\n\n📖 **เอกสารอ้างอิงข้อผิดพลาด**: ดูรหัสข้อผิดพลาดทั้งหมดและวิธีแก้ปัญหาได้ที่ [Error Codes](#email/tag/errors)"
+    },
+    {
+      "name": "email-attachment",
+      "x-displayName": "Attachment Management",
+      "description": "> **Base URL:** `https://email-api.thaibulksms.com`\n\nการจัดการไฟล์แนบ\n\n📖 **เอกสารอ้างอิงข้อผิดพลาด**: ดูรหัสข้อผิดพลาดทั้งหมดได้ที่ [Error Codes](#email/tag/errors)"
+    },
+    {
+      "name": "email-errors",
+      "x-displayName": "Error Codes",
+      "description": "หน้านี้อธิบาย error codes, error messages และรูปแบบ response ที่อาจเกิดขึ้นเมื่อใช้งาน TBS Email API\n\n## Response Format\n\n### Standard Endpoints (Non-OTP)\n\nรูปแบบ response สำหรับ endpoints ทั่วไป (ยกเว้น OTP endpoints):\n\n```typescript\n{\n  statusCode: number,        // HTTP status code\n  timestamp: string,         // ISO 8601 format (UTC)\n  message: string,           // Error message\n  required?: string[]        // Optional: validation errors array\n}\n```\n\n**ตัวอย่าง:**\n\n```json\n{\n  \"statusCode\": 400,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"Email template not found.\",\n  \"required\": [\n    \"mail_from must be a non-empty object\"\n  ]\n}\n```\n\n### OTP Endpoints\n\nรูปแบบ response สำหรับ OTP endpoints (`/email/v1/otp/*`):\n\n```typescript\n{\n  code: string,              // Error code\n  message: string            // Error message\n}\n```\n\n**ตัวอย่าง:**\n\n```json\n{\n  \"code\": \"INVALID_REQUEST\",\n  \"message\": \"Invalid request\"\n}\n```\n\n### Success Response\n\nรูปแบบ response เมื่อส่งอีเมลสำเร็จ:\n\n```typescript\n{\n  message_id: string,        // UUID of the email transaction\n  credit_type: string,       // \"EMAIL\"\n  credit_remain: number,     // Remaining credit\n  credit_used: number        // Credit used for this transaction\n}\n```\n\n## EMAIL\n\nError สำหรับการส่งอีเมลและการตรวจเครดิตคงเหลือ (`/email/v1/send_template`, `/email/v1/credit`)\n\n| Status Code | Code | Message |\n| --- | --- | --- |\n| 400 | `ERROR_CALLBACK_URL` | Callback Url is invalid. |\n| 400 | `ERROR_CALLBACK_METHOD` | You can choose callback method are GET, POST or PUT method. |\n| 400 | `ERROR_EMAIL_TEMPLATE_NOT_READY` | Email template is not ready. |\n| 400 | `ERROR_RECIPIENT_UNSUBSCRIBED` | Recipient has unsubscribed from emails. |\n| 400 | `ERROR_INVALID_FILE` | Invalid file. |\n| 400 | `ERROR_TOTAL_FILE_LIMIT_EXCEED` | Total file limit exceeded. (Max 5 files). |\n| 400 | `ERROR_MAX_FILE_SIZE_EXCEED` | Max file size limit exceeded (5MB). |\n| 400 | `ERROR_FAILED_URL_ATTACHMENT` | Failed to get URL attachment. |\n| 400 | - | to email is invalid |\n| 400 | - | payload must be JSON object |\n| 400 | - | All properties in payload must be strings |\n| 400 | - | Keyword spam detected! |\n| 401 | `ERROR_AUTHENTICATION_FAILED` | Authentication failed. |\n| 402 | `ERROR_INSUFFICIENT_CREDIT` | Insufficient credit. |\n| 402 | `ERROR_EXPIRED_CREDIT` | Expired credit. |\n| 403 | `ERROR_API_KEY_SUSPENDED` | This API key has been suspended. |\n| 403 | `ERROR_IP_NOT_ALLOWED` | This IP is not allowed. |\n| 404 | `ERROR_EMAIL_SENDER_NOT_FOUND` | Sender not found. |\n| 404 | `ERROR_EMAIL_TEMPLATE_NOT_FOUND` | Email template not found. |\n| 429 | - | Rate limit exceeded |\n| 500 | - | Internal server error |\n| 503 | - | Service unavailable |\n\n**หมายเหตุ:** รายการที่คอลัมน์ Code เป็น `-` คือไม่มี error code กำหนดไว้ชัดเจน ระบบจะส่งกลับเฉพาะ message\n\n## EMAIL OTP\n\nError สำหรับการส่งและยืนยัน OTP (`/email/v1/otp/send`, `/email/v1/otp/verify`)\n\n| Status Code | Code | Message |\n| --- | --- | --- |\n| 400 | `INVALID_REQUEST` | Invalid email template |\n| 400 | `INVALID_REQUEST` | Invalid OTP |\n| 400 | `INVALID_REQUEST` | Invalid request |\n| 401 | `UNAUTHORIZED` | Unauthorized |\n| 402 | `ERROR_INSUFFICIENT_CREDIT` | Error insufficient credit |\n| 404 | `NOT_FOUND` | Not found |\n| 500 | `INTERNAL_SERVER_ERROR` | Internal server error |\n\n**หมายเหตุ:** OTP endpoints ใช้รูปแบบ error ต่างออกไป โดยใช้ฟิลด์ `code` และ `message` แทน `statusCode` และ `message`\n\n## ATTACHMENT\n\nError สำหรับการจัดการไฟล์แนบ (`/email/v1/email-attachment/*`)\n\n| Status Code | Code | Message |\n| --- | --- | --- |\n| 400 | `ERROR_FILE_NOT_ALLOWED` | File is not allowed! |\n| 400 | - | No file uploaded |\n| 401 | `ERROR_AUTHENTICATION_FAILED` | Authentication failed. |\n| 403 | `ERROR_API_KEY_SUSPENDED` | This API key has been suspended. |\n| 403 | `ERROR_IP_NOT_ALLOWED` | This IP is not allowed. |\n| 404 | `ATTACHMENT_NOT_FOUND` | Attachment not found |\n| 413 | - | Payload Too Large |\n| 415 | - | Files are not allowed! |\n\n**ข้อจำกัดไฟล์:**\n\n- **จำนวนไฟล์สูงสุด:** 5 ไฟล์ต่ออีเมล\n- **ขนาดไฟล์สูงสุด:** 5MB ต่อไฟล์\n\n**ชนิดไฟล์ที่รองรับ:**\n\n- **เอกสาร:** `.txt`, `.csv`, `.doc`, `.docx`, `.xls`, `.xlsx`, `.pdf`\n- **รูปภาพ:** `.png`, `.jpeg`, `.jpg`, `.gif`\n- **วิดีโอ:** `.mov`\n\n## Error Details\n\n### Authentication & Authorization\n\n#### 401 Unauthorized\n\n**Standard Format:**\n\n```json\n{\n  \"statusCode\": 401,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"Authentication failed.\"\n}\n```\n\n**OTP Format:**\n\n```json\n{\n  \"code\": \"UNAUTHORIZED\",\n  \"message\": \"Unauthorized\"\n}\n```\n\n**วิธีแก้ไข:**\n\n- ตรวจสอบ API key และ API secret\n- ตรวจสอบรูปแบบ Basic Auth header: `Authorization: Basic <base64(api-key:api-secret)>`\n- ตรวจสอบว่า API key ยังใช้งานได้\n\n#### 403 Forbidden\n\n```json\n{\n  \"statusCode\": 403,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"This API key has been suspended.\"\n}\n```\n\n**วิธีแก้ไข:**\n\n- ติดต่อ support เพื่อเปิดใช้งาน API key หรือ IP\n\n### Credit & Payment\n\n#### 402 Payment Required\n\n**Standard Format:**\n\n```json\n{\n  \"statusCode\": 402,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"Insufficient credit.\"\n}\n```\n\n**OTP Format:**\n\n```json\n{\n  \"code\": \"ERROR_INSUFFICIENT_CREDIT\",\n  \"message\": \"Error insufficient credit\"\n}\n```\n\n**วิธีแก้ไข:**\n\n- เติมเครดิตเพิ่ม\n- ตรวจสอบวันหมดอายุของเครดิต\n\n### Resource Not Found\n\n#### 404 Not Found\n\n**Standard Format:**\n\n```json\n{\n  \"statusCode\": 404,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"Email template not found.\"\n}\n```\n\n**OTP Format:**\n\n```json\n{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"Not found\"\n}\n```\n\n**วิธีแก้ไข:**\n\n- ตรวจสอบ template UUID หรือ sender email\n- ตรวจสอบสถานะ approval ของ sender\n- ตรวจสอบ template ownership\n\n### Validation Errors\n\n#### 400 Bad Request\n\n**Standard Format:**\n\n```json\n{\n  \"statusCode\": 400,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"Validation failed\",\n  \"required\": [\n    \"mail_from must be a non-empty object\",\n    \"mail_to must be a non-empty object\",\n    \"subject must be longer than or equal to 1 characters\"\n  ]\n}\n```\n\n**OTP Format:**\n\n```json\n{\n  \"code\": \"INVALID_REQUEST\",\n  \"message\": \"Invalid request\"\n}\n```\n\n**วิธีแก้ไข:**\n\n- ตรวจสอบโครงสร้าง request payload\n- ตรวจสอบรูปแบบอีเมล\n- ตรวจสอบ payload properties (ต้องเป็น string ทั้งหมด)\n- ตรวจสอบรูปแบบและการเข้าถึง callback URL\n\n### File & Attachment Errors\n\n**ตัวอย่าง:**\n\n```json\n{\n  \"statusCode\": 400,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"Total file limit exceeded. (Max 5 files).\"\n}\n```\n\n**วิธีแก้ไข:**\n\n- ลดจำนวนไฟล์ให้ไม่เกิน 5 ไฟล์\n- ลดขนาดไฟล์ให้ไม่เกิน 5MB ต่อไฟล์\n- ตรวจสอบนามสกุลไฟล์ที่อนุญาต\n- ตรวจสอบการเข้าถึง URL (สำหรับ URL attachment)\n\n### Rate Limiting\n\n#### 429 Too Many Requests\n\n```json\n{\n  \"statusCode\": 429,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"Rate limit exceeded\"\n}\n```\n\n**วิธีแก้ไข:**\n\n- ⏱️ รอสักครู่ก่อนลองใหม่\n- 📉 ลดอัตราการเรียก request\n- 🔄 ใช้ exponential backoff\n\n### Server Errors\n\n#### 500 Internal Server Error\n\n**Standard Format:**\n\n```json\n{\n  \"statusCode\": 500,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"Internal server error\"\n}\n```\n\n**OTP Format:**\n\n```json\n{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}\n```\n\n**วิธีแก้ไข:**\n\n- ✅ **5xx errors:** ลองใหม่ด้วย exponential backoff\n- ❌ **4xx errors:** ไม่ต้องลองใหม่ (ยกเว้น 429)\n\n#### 503 Service Unavailable\n\n```json\n{\n  \"statusCode\": 503,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"message\": \"Service unavailable\"\n}\n```"
+    },
+    {
+      "name": "otp-sms",
+      "description": "> **Base URL:** `https://otp.thaibulksms.com`\n\nสร้างและยืนยันรหัส OTP ที่ส่งให้ผู้ใช้ทาง SMS โดยส่งข้อมูลยืนยันตัวตนผ่านฟิลด์ `key` และ `secret` ในเนื้อหาคำขอ",
+      "x-displayName": "SMS OTP"
+    },
+    {
+      "name": "otp-email",
+      "description": "> **Base URL:** `https://email-api.thaibulksms.com`\n\nสร้างและยืนยันรหัส OTP ที่ส่งให้ผู้ใช้ทางอีเมล ยืนยันตัวตนแบบ Basic Authentication ด้วย API Key และ API Secret",
+      "x-displayName": "Email OTP"
+    }
+  ],
+  "paths": {
+    "/sms": {
+      "post": {
+        "description": "**Base URL:** `https://api-v2.thaibulksms.com/`\n\nใช้สำหรับส่งข้อความ SMS ไปยังผู้รับผ่านระบบ Thai Bulk SMS โดยสามารถระบุผู้รับได้ทั้งแบบหมายเลขเดียวหรือหลายหมายเลขภายในคำขอเดียว\n\nAPI รองรับฟังก์ชันเพิ่มเติม เช่น การกำหนดเวลาส่งล่วงหน้า การย่อลิงก์ในข้อความ และการเลือกประเภทเครดิตที่ใช้ในการส่ง SMS\n\n**การยืนยันตัวตน**: endpoint นี้ใช้ Basic Authentication ด้วย API Key และ API Secret กดที่ปุ่ม \"Test Request\" จากนั้นให้ระบุ API Key และ API Secret",
+        "tags": [
+          "sms-messaging"
+        ],
+        "summary": "การส่งข้อความ",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sender": {
+                    "description": "ชื่อผู้ส่ง จำเป็นต้องพิมพ์ให้ถูกต้องทุกตัวอักษร ตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่",
+                    "type": "string"
+                  },
+                  "msisdn": {
+                    "description": "เบอร์โทรศัพท์รองรับหลากรูปแบบ เช่น  0812345678, 66812345678 และ +66812345678 หากต้องการส่งครั้งละหลายหมายเลข สามารถเพิ่มเบอร์ได้สูงสุดครั้งละ 500 เบอร์ โดยคั่นด้วยเครื่องหมายจุลภาค (,) ",
+                    "type": "string"
+                  },
+                  "message": {
+                    "description": "ข้อความที่ต้องการส่ง",
+                    "type": "string"
+                  },
+                  "shorten_url": {
+                    "description": "เลือกเปิดปิดฟังก์ชั่นการย่อลิ้ง URL ที่ยาวให้สั่นลงเพื่อประหยัดเครดิต (\"true\" หรือ \"false\") โดยฟังก์ชั่นจะทำงานต่อเมื่อ URL มีตัวอักษรมากกว่า 25 ต้วอักษรขึ้นไป",
+                    "type": "string"
+                  },
+                  "tracking_url": {
+                    "description": "ใส่ URL เพื่อเปิดใช้งานฟังก์ชันติดตามลิงก์ โดยใช้ `<TRACKING-URL>` ในข้อความ ระบบจะสร้าง URL ใหม่ในข้อความเพื่อให้ตรวจสอบได้ว่ามีการคลิกหรือไม่",
+                    "type": "string"
+                  },
+                  "force": {
+                    "description": "เลือกประเภทเครดิตที่ต้องการใช้ส่ง standard หรือ corporate",
+                    "type": "string"
+                  },
+                  "scheduled_delivery": {
+                    "description": "การตั้งเวลาส่งล่วงหน้า หากตั้งเวลาน้อยกว่าปัจจุบันหรือไม่ส่งค่า จะเป็นการส่งทันที ตัวอย่างรูปแบบการตั้งเวลาส่ง : 2020-12-17T17:12:00+07:00",
+                    "type": "string"
+                  },
+                  "expire": {
+                    "description": "ระยะเวลาหมดอายุของการส่งข้อความ ต้องมากกว่า 5 นาที และน้อยกว่า 11 ชั่วโมง เช่น 00:10 (HH:mm) หากเกินระยะเวลาที่กำหนด ผู้รับจะไม่ได้รับข้อความหลังจากเวลาดังกล่าวไม่ว่ากรณีใด ๆ",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "sender",
+                  "msisdn",
+                  "message"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/controller.OubtoundSmsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/helper.RenderError"
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://api-v2.thaibulksms.com/"
+          }
+        ],
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    },
+    "/credit": {
+      "get": {
+        "description": "**Base URL:** `https://api-v2.thaibulksms.com/`\n\nใช้สำหรับตรวจสอบเครดิต SMS คงเหลือในบัญชีก่อนทำการส่งข้อความ\n\nระบบจะแสดงจำนวนเครดิตคงเหลือแยกตามประเภทเครดิตที่บัญชีสามารถใช้งานได้ เช่น Standard Credit และ Corporate Credit\n\nแนะนำให้ตรวจสอบเครดิตคงเหลือก่อนส่งข้อความจำนวนมาก เพื่อป้องกันการส่งล้มเหลวเนื่องจากเครดิตไม่เพียงพอ\n\n**การยืนยันตัวตน**: endpoint นี้ใช้ Basic Authentication ด้วย API Key และ API Secret กดที่ปุ่ม \"Test Request\" จากนั้นให้ระบุ API Key และ API Secret",
+        "tags": [
+          "sms-messaging"
+        ],
+        "summary": "เช็คเครดิตคงเหลือ",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/credit.getCreditResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/helper.RenderError"
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://api-v2.thaibulksms.com/"
+          }
+        ],
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    },
+    "/email/v1/send_template": {
+      "post": {
+        "operationId": "TransactionalController_send",
+        "tags": [
+          "email-messaging"
+        ],
+        "summary": "การส่งข้อความ",
+        "description": "**Base URL:** `https://email-api.thaibulksms.com`\n\nใช้สำหรับส่งอีเมลไปยังผู้รับผ่านระบบ Thai Bulk SMS โดยสามารถระบุผู้รับได้ทั้งแบบอีเมลเดียวหรือหลายอีเมลภายในคำขอเดียว\n\nรองรับการแนบไฟล์ได้ 2 รูปแบบ ได้แก่ การระบุ URL ของไฟล์โดยตรง หรือการอ้างอิง UUID ของไฟล์ที่ได้จาก Upload File API\n\n**ระบุ API Key และ API Secret จากนั้นให้กดที่ปุ่ม \"Test Request\"**",
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseTransactionDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimitExceeded"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        },
+        "servers": [
+          {
+            "url": "https://email-api.thaibulksms.com"
+          }
+        ]
+      }
+    },
+    "/email/v1/credit": {
+      "get": {
+        "operationId": "CreditController_getCredit",
+        "tags": [
+          "email-messaging"
+        ],
+        "summary": "เช็คเครดิตคงเหลือ",
+        "description": "**Base URL:** `https://email-api.thaibulksms.com`\n\nใช้สำหรับตรวจสอบจำนวนเครดิตอีเมลคงเหลือในบัญชีก่อนทำการส่งอีเมล\n\nแนะนำให้ตรวจสอบเครดิตคงเหลือก่อนการส่งอีเมลจำนวนมาก เพื่อป้องกันการส่งล้มเหลวเนื่องจากเครดิตไม่เพียงพอ\n\n**ระบุ API Key และ API Secret จากนั้นให้กดที่ปุ่ม \"Test Request\"**",
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseCreditDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        },
+        "servers": [
+          {
+            "url": "https://email-api.thaibulksms.com"
+          }
+        ]
+      }
+    },
+    "/email/v1/email-attachment/media": {
+      "post": {
+        "operationId": "AttachmentController_upload",
+        "tags": [
+          "email-attachment"
+        ],
+        "summary": "อัปโหลดไฟล์แนบ",
+        "description": "**Base URL:** `https://email-api.thaibulksms.com`\n\nใช้สำหรับอัปโหลดไฟล์เพื่อใช้งานเป็นไฟล์แนบในการส่งอีเมล\n\nเมื่ออัปโหลดไฟล์สำเร็จ ระบบจะส่งกลับ UUID ของไฟล์ ซึ่งสามารถนำไปอ้างอิงในฟิลด์ attachments ของการส่งอีเมลได้\n\nไฟล์ที่อัปโหลดจะถูกจัดเก็บไว้เป็นระยะเวลา 7 วันนับจากวันที่อัปโหลด เมื่อครบกำหนดแล้ว ระบบจะไม่สามารถค้นหาหรือเรียกใช้งานไฟล์และ UUID ดังกล่าวผ่าน File API ได้อีก",
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "ไฟล์ที่ต้องการอัปโหลด (รองรับการส่งทีละ 1 ไฟล์)"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadSuccessResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          }
+        },
+        "servers": [
+          {
+            "url": "https://email-api.thaibulksms.com"
+          }
+        ]
+      },
+      "get": {
+        "operationId": "AttachmentController_list",
+        "tags": [
+          "email-attachment"
+        ],
+        "summary": "ดึงรายการไฟล์แนบ",
+        "description": "**Base URL:** `https://email-api.thaibulksms.com`\n\nใช้สำหรับดึงรายการไฟล์ที่อัปโหลดไว้ในบัญชี\n\nข้อมูลที่ได้รับสามารถนำไปใช้ตรวจสอบไฟล์ที่มีอยู่ และค้นหา UUID ของไฟล์เพื่อใช้อ้างอิงในการส่งอีเมล",
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "หน้าที่ต้องการดึง (เริ่มต้นจาก 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "จำนวนรายการต่อหน้า (สูงสุด 100, ค่าเริ่มต้น 10)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAttachmentsResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        },
+        "servers": [
+          {
+            "url": "https://email-api.thaibulksms.com"
+          }
+        ]
+      }
+    },
+    "/email/v1/email-attachment/media/{uuid}": {
+      "get": {
+        "operationId": "AttachmentController_get",
+        "tags": [
+          "email-attachment"
+        ],
+        "summary": "ดึงไฟล์แนบตาม UUID",
+        "description": "**Base URL:** `https://email-api.thaibulksms.com`\n\nใช้สำหรับดึงรายละเอียดของไฟล์ที่อัปโหลด โดยระบุ UUID ของไฟล์\n\nสามารถใช้เพื่อตรวจสอบชื่อของไฟล์ก่อนนำไปอ้างอิงในการส่งอีเมล",
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID ของไฟล์ที่ต้องการดึงข้อมูล"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachmentFileDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "servers": [
+          {
+            "url": "https://email-api.thaibulksms.com"
+          }
+        ]
+      }
+    },
+    "/email/v1/email-attachment/{attachmentId}": {
+      "delete": {
+        "operationId": "AttachmentController_delete",
+        "tags": [
+          "email-attachment"
+        ],
+        "summary": "ลบไฟล์แนบ",
+        "description": "**Base URL:** `https://email-api.thaibulksms.com`\n\nใช้สำหรับลบไฟล์ที่อัปโหลดออกจากระบบ\n\nหลังจากลบไฟล์แล้ว จะไม่สามารถนำ UUID ของไฟล์ดังกล่าวไปใช้อ้างอิงในการส่งอีเมลได้",
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "attachmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID ของไฟล์ที่ต้องการลบ"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSuccessResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "servers": [
+          {
+            "url": "https://email-api.thaibulksms.com"
+          }
+        ]
+      }
+    },
+    "/v2/otp/request": {
+      "post": {
+        "description": "**Base URL:** `https://otp.thaibulksms.com`\n\nใช้สำหรับส่งรหัส OTP ไปยังหมายเลขโทรศัพท์ผ่าน SMS เพื่อใช้ในการยืนยันตัวตนหรือดำเนินการตามขั้นตอนที่ต้องการความปลอดภัยเพิ่มเติม",
+        "tags": [
+          "otp-sms"
+        ],
+        "summary": "ขอรหัส OTP",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Key ของ แอพพลิเคชั่น",
+                    "type": "string"
+                  },
+                  "secret": {
+                    "description": "Secret ของ แอพพลิเคชั่น",
+                    "type": "string"
+                  },
+                  "msisdn": {
+                    "description": "หมายเลขโทรศัพท์",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "key",
+                  "secret",
+                  "msisdn"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/REQUEST-SUCCESS"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/REQUEST-FAIL"
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://otp.thaibulksms.com"
+          }
+        ]
+      }
+    },
+    "/v2/otp/verify": {
+      "post": {
+        "description": "**Base URL:** `https://otp.thaibulksms.com`\n\nใช้สำหรับตรวจสอบความถูกต้องของรหัส OTP ที่ผู้ใช้งานได้รับผ่าน SMS",
+        "tags": [
+          "otp-sms"
+        ],
+        "summary": "ยืนยันรหัส OTP",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Key ของ แอพพลิเคชั่น",
+                    "type": "string"
+                  },
+                  "secret": {
+                    "description": "Secret ของ แอพพลิเคชั่น",
+                    "type": "string"
+                  },
+                  "token": {
+                    "description": "Token สำหรับการทำรายการ (จะได้รับจาก Request OTP)",
+                    "type": "string"
+                  },
+                  "pin": {
+                    "description": "รหัสยืนยัน (OTP) ที่ได้รับจาก SMS",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "key",
+                  "secret",
+                  "token",
+                  "pin"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VERIFY-SUCCESS"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VERIFY-FAIL"
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://otp.thaibulksms.com"
+          }
+        ]
+      }
+    },
+    "/email/v1/otp/send": {
+      "post": {
+        "operationId": "OTPController_send",
+        "tags": [
+          "otp-email"
+        ],
+        "summary": "ขอรหัส OTP",
+        "description": "**Base URL:** `https://email-api.thaibulksms.com`\n\nใช้สำหรับส่งรหัส OTP ไปยังอีเมลของผู้ใช้งานเพื่อใช้ในการยืนยันตัวตน\n\n**ระบุ API Key และ API Secret จากนั้นให้กดที่ปุ่ม \"Test Request\"**",
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "template_uuid": {
+                    "type": "string",
+                    "description": "template_uuid ที่ได้จากสร้าง Email OTP"
+                  },
+                  "recipient_email": {
+                    "type": "string",
+                    "description": "email ที่ต้องการส่ง OTP"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "description": "payload สำหรับ mergeTag"
+                  }
+                },
+                "required": [
+                  "template_uuid",
+                  "recipient_email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message_id": {
+                      "type": "string",
+                      "example": "550e8400-e29b-41d4-a716-446655440000",
+                      "description": "ใช้อ้างอิงตรวจสอบสถานะ email"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "success",
+                      "description": "ผลการส่ง otp"
+                    },
+                    "token": {
+                      "type": "string",
+                      "example": "9b2c1d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e",
+                      "description": "token ใช้ตรวจสอบคู่กับ OTP code"
+                    },
+                    "ref_no": {
+                      "type": "string",
+                      "example": "012345",
+                      "description": "รหัสอ้างอิงใช้คู่กับ OTP code"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestOTP"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedOTP"
+          },
+          "402": {
+            "$ref": "#/components/responses/PaymentRequiredOTP"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundOTP"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerErrorOTP"
+          }
+        },
+        "servers": [
+          {
+            "url": "https://email-api.thaibulksms.com"
+          }
+        ]
+      }
+    },
+    "/email/v1/otp/verify": {
+      "post": {
+        "operationId": "OTPController_verify",
+        "tags": [
+          "otp-email"
+        ],
+        "summary": "ยืนยันรหัส OTP",
+        "description": "**Base URL:** `https://email-api.thaibulksms.com`\n\nใช้สำหรับตรวจสอบความถูกต้องของรหัส OTP ที่ผู้ใช้งานได้รับทางอีเมล\n\n**ระบุ API Key และ API Secret จากนั้นให้กดที่ปุ่ม \"Test Request\"**",
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "otp_code": {
+                    "type": "string",
+                    "description": "OTP code ที่ได้รับจาก email"
+                  },
+                  "token": {
+                    "type": "string",
+                    "description": "token ใช้ตรวจสอบคู่กับ OTP code"
+                  }
+                },
+                "required": [
+                  "otp_code",
+                  "token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success",
+                      "description": "ผลการ verify"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OTP verified successfully"
+                    },
+                    "message_id": {
+                      "type": "string",
+                      "example": "550e8400-e29b-41d4-a716-446655440000",
+                      "description": "ใช้อ้างอิงตรวจสอบสถานะ email"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestOTP"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedOTP"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundOTP"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerErrorOTP"
+          }
+        },
+        "servers": [
+          {
+            "url": "https://email-api.thaibulksms.com"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "basic": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "การยืนยันตัวตนแบบ Basic Authentication ด้วย API Key และ API Secret ของคุณ"
+      }
+    },
+    "schemas": {
+      "config.ErrorDetail": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 1
+          },
+          "description": {
+            "type": "string",
+            "example": "Invalid request parameters."
+          },
+          "name": {
+            "type": "string",
+            "example": "ERROR_INVALID_REQUEST"
+          }
+        }
+      },
+      "controller.OubtoundSmsResponse": {
+        "type": "object",
+        "properties": {
+          "bad_phone_number_list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/controller.badPhoneNumber"
+            }
+          },
+          "credit_type": {
+            "type": "string",
+            "example": "corporate"
+          },
+          "phone_number_list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/controller.phoneNumber"
+            }
+          },
+          "remaining_credit": {
+            "type": "integer",
+            "example": 156758
+          },
+          "total_use_credit": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "controller.badPhoneNumber": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Phone number is invalid."
+          },
+          "number": {
+            "type": "string",
+            "example": "66812345678"
+          }
+        }
+      },
+      "controller.phoneNumber": {
+        "type": "object",
+        "properties": {
+          "message_id": {
+            "type": "string",
+            "example": "VtznKfqHUjmDCysZyOZDQX"
+          },
+          "number": {
+            "type": "string",
+            "example": "66812345678"
+          },
+          "used_credit": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "helper.RenderError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/config.ErrorDetail"
+          }
+        }
+      },
+      "credit.getCreditResponse": {
+        "type": "object",
+        "properties": {
+          "remaining_credit": {
+            "type": "object",
+            "properties": {
+              "standard": {
+                "type": "integer",
+                "example": 10
+              },
+              "corporate": {
+                "type": "integer",
+                "example": 15
+              }
+            }
+          }
+        }
+      },
+      "ResponseCreditDto": {
+        "type": "object",
+        "properties": {
+          "credit_remain": {
+            "type": "number",
+            "example": 1500,
+            "description": "เครดิตคงเหลือ"
+          }
+        }
+      },
+      "MergeTagDto": {
+        "type": "object",
+        "properties": {
+          "FIRST_NAME": {
+            "type": "string"
+          },
+          "LAST_NAME": {
+            "type": "string"
+          },
+          "PHONE": {
+            "type": "string"
+          },
+          "BIRTHDAY": {
+            "type": "string"
+          },
+          "OPTION_1": {
+            "type": "string"
+          },
+          "OPTION_2": {
+            "type": "string"
+          },
+          "OPTION_3": {
+            "type": "string"
+          }
+        }
+      },
+      "ContactFromDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "example@mail.com",
+            "description": "ระบุ Email ผู้ส่ง"
+          },
+          "name": {
+            "type": "string",
+            "description": "ระบุ \"ชื่อ\" ที่จะเพิ่มหน้าอีเมล"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ContactToDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "example@mail.com",
+            "description": "ระบุ Email ผู้รับปลายทางที่ต้องการให้รับข้อความ"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "SendDto": {
+        "type": "object",
+        "properties": {
+          "template_uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ระบุ Email Template UUID จาก เมนู \"เทมเพลตอีเมล\" จากนั้น \"Copy เลข UUID\" ของเทมเพลตมาใส่"
+          },
+          "mail_from": {
+            "$ref": "#/components/schemas/ContactFromDto"
+          },
+          "mail_to": {
+            "$ref": "#/components/schemas/ContactToDto"
+          },
+          "subject": {
+            "type": "string",
+            "description": "ระบุ Subject ที่ต้องการส่งอีเมล"
+          },
+          "payload": {
+            "example": {
+              "email": "example@mail.com",
+              "name": "John Doe"
+            },
+            "description": "หากลูกค้าต้องการส่งข้อความที่เปลี่ยนไปตามแต่ละผู้รับ โปรดระบุ Merge tag ในเทมเพลตอีเมล",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MergeTagDto"
+              }
+            ]
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttachmentDto"
+            },
+            "description": "ไฟล์แนบ (สูงสุด 5 ไฟล์)\n\nสามารถแนบไฟล์ได้ 2 รูปแบบ:\n\n- **URL Attachment** – ใช้ URL ของไฟล์ที่เข้าถึงได้แบบสาธารณะ\n- **UUID Attachment** – อัปโหลดไฟล์ผ่าน [อัปโหลดไฟล์แนบ](#email/tag/attachment) แล้วนำ UUID ที่ได้รับมาใช้",
+            "maxItems": 5
+          }
+        },
+        "required": [
+          "template_uuid",
+          "mail_from",
+          "mail_to",
+          "subject"
+        ]
+      },
+      "ResponseTransactionDto": {
+        "type": "object",
+        "properties": {
+          "message_id": {
+            "type": "string",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "description": "UUID ของ email transaction"
+          },
+          "credit_type": {
+            "type": "string",
+            "enum": [
+              "email"
+            ],
+            "example": "email"
+          },
+          "credit_remain": {
+            "type": "number",
+            "example": 1500,
+            "description": "เครดิตคงเหลือ"
+          },
+          "credit_used": {
+            "type": "number",
+            "example": 1,
+            "description": "เครดิตที่ใช้ไป"
+          }
+        }
+      },
+      "AttachmentDto": {
+        "description": "ไฟล์แนบ (สูงสุด 5 ไฟล์) ขนาดไฟล์รวมกันไม่เกิน 5Mb",
+        "oneOf": [
+          {
+            "title": "ไฟล์แนบแบบ URL",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "url"
+                ],
+                "description": "ประเภทของไฟล์แนบ: 'url'"
+              },
+              "filename": {
+                "type": "string",
+                "description": "ชื่อไฟล์ (สำหรับ URL attachment)"
+              },
+              "fileUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL ของไฟล์ที่ต้องการแนบ"
+              }
+            },
+            "required": [
+              "type",
+              "filename",
+              "fileUrl"
+            ]
+          },
+          {
+            "title": "ไฟล์แนบแบบ UUID",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "uuid"
+                ],
+                "description": "ประเภทของไฟล์แนบ: 'uuid'"
+              },
+              "uuid": {
+                "type": "string",
+                "format": "uuid",
+                "description": "UUID ของไฟล์ที่อัปโหลดไว้ในระบบ"
+              }
+            },
+            "required": [
+              "type",
+              "uuid"
+            ]
+          }
+        ]
+      },
+      "ErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "description": "รหัสสถานะ HTTP"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "เวลาในรูปแบบ ISO 8601 (UTC)"
+          },
+          "message": {
+            "type": "string",
+            "description": "ข้อความแสดงข้อผิดพลาด"
+          },
+          "required": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "รายการข้อผิดพลาดจากการตรวจสอบข้อมูล (เฉพาะกรณีที่เป็นข้อผิดพลาดจากการตรวจสอบ)"
+          }
+        }
+      },
+      "AttachmentFileDto": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "fileName": {
+            "type": "string",
+            "example": "document.pdf"
+          },
+          "fileSize": {
+            "type": "number",
+            "example": 204800
+          }
+        }
+      },
+      "UploadSuccessResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "File uploaded successfully"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttachmentFileDto"
+            }
+          }
+        }
+      },
+      "ListAttachmentsResponseDto": {
+        "type": "object",
+        "properties": {
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttachmentFileDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 1
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 20
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 1
+          }
+        }
+      },
+      "DeleteSuccessResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Attachment deleted successfully"
+          }
+        }
+      },
+      "REQUEST-SUCCESS": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "token": {
+            "type": "string",
+            "example": "aER2jwLPk4pod2zu3S5dv6GDVyY19zlm"
+          },
+          "refno": {
+            "type": "string",
+            "example": "GMR5Y"
+          }
+        }
+      },
+      "REQUEST-FAIL": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "detail": {},
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "code": {
+            "type": "integer"
+          }
+        },
+        "example": {
+          "errors": [
+            {
+              "detail": "ERROR_MSISDN",
+              "message": "Gateway response send sms fail."
+            }
+          ],
+          "code": 400
+        }
+      },
+      "VERIFY-SUCCESS": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Code is correct."
+          }
+        }
+      },
+      "VERIFY-FAIL": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "detail": {},
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "code": {
+            "type": "integer"
+          }
+        },
+        "example": {
+          "errors": [
+            {
+              "detail": [],
+              "message": "Application not found."
+            }
+          ],
+          "code": 400
+        }
+      },
+      "OTPErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "รหัสข้อผิดพลาด"
+          },
+          "message": {
+            "type": "string",
+            "description": "ข้อความแสดงข้อผิดพลาด"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "TemplateNotFound": {
+                "summary": "ไม่พบเทมเพลต",
+                "value": {
+                  "statusCode": 400,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Email template not found."
+                }
+              },
+              "InvalidEmail": {
+                "summary": "รูปแบบอีเมลไม่ถูกต้อง",
+                "value": {
+                  "statusCode": 400,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "to email is invalid"
+                }
+              },
+              "ValidationError": {
+                "summary": "ข้อผิดพลาดจากการตรวจสอบข้อมูล",
+                "value": {
+                  "statusCode": 400,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Validation failed",
+                  "required": [
+                    "mail_from must be a non-empty object",
+                    "mail_to must be a non-empty object"
+                  ]
+                }
+              },
+              "FileLimitExceeded": {
+                "summary": "เกินจำนวนไฟล์ที่กำหนด",
+                "value": {
+                  "statusCode": 400,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Total file limit exceeded. (Max 5 files)."
+                }
+              },
+              "FileSizeExceeded": {
+                "summary": "ขนาดไฟล์เกินกำหนด",
+                "value": {
+                  "statusCode": 400,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Max file size limit exceeded (5MB)."
+                }
+              },
+              "FileNotAllowed": {
+                "summary": "File Not Allowed",
+                "value": {
+                  "statusCode": 400,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "File is not allowed!"
+                }
+              },
+              "NoFileUploaded": {
+                "summary": "No File Uploaded",
+                "value": {
+                  "statusCode": 400,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "No file uploaded"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "AuthenticationFailed": {
+                "summary": "การยืนยันตัวตนล้มเหลว",
+                "value": {
+                  "statusCode": 401,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Authentication failed."
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaymentRequired": {
+        "description": "Payment Required",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "InsufficientCredit": {
+                "summary": "เครดิตไม่เพียงพอ",
+                "value": {
+                  "statusCode": 402,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Insufficient credit."
+                }
+              },
+              "ExpiredCredit": {
+                "summary": "เครดิตหมดอายุ",
+                "value": {
+                  "statusCode": 402,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Expired credit."
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "TemplateNotFound": {
+                "summary": "ไม่พบเทมเพลต",
+                "value": {
+                  "statusCode": 404,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Email template not found."
+                }
+              },
+              "SenderNotFound": {
+                "summary": "ไม่พบชื่อผู้ส่ง",
+                "value": {
+                  "statusCode": 404,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Sender not found."
+                }
+              },
+              "AttachmentNotFound": {
+                "summary": "ไม่พบไฟล์แนบ",
+                "value": {
+                  "statusCode": 400,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Attachment not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "RateLimitExceeded": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "RateLimit": {
+                "summary": "เกินขีดจำกัดการเรียกใช้งาน",
+                "value": {
+                  "statusCode": 429,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Rate limit exceeded"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PayloadTooLarge": {
+        "description": "Payload Too Large",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "FileTooLarge": {
+                "summary": "ไฟล์มีขนาดใหญ่เกินไป",
+                "value": {
+                  "statusCode": 413,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Payload Too Large"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "ServerError": {
+                "summary": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+                "value": {
+                  "statusCode": 500,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "ApiKeySuspended": {
+                "summary": "API Key Suspended",
+                "value": {
+                  "statusCode": 403,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "This API key has been suspended."
+                }
+              },
+              "IpNotAllowed": {
+                "summary": "IP Not Allowed",
+                "value": {
+                  "statusCode": 403,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "This IP is not allowed."
+                }
+              }
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "Service Unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "ServiceUnavailable": {
+                "summary": "Service Unavailable",
+                "value": {
+                  "statusCode": 503,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Service unavailable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnsupportedMediaType": {
+        "description": "Unsupported Media Type",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponseDto"
+            },
+            "examples": {
+              "FilesNotAllowed": {
+                "summary": "Files Not Allowed",
+                "value": {
+                  "statusCode": 415,
+                  "timestamp": "2024-01-15T10:30:00.000Z",
+                  "message": "Files are not allowed!"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BadRequestOTP": {
+        "description": "คำขอไม่ถูกต้อง (รูปแบบ OTP)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OTPErrorResponseDto"
+            },
+            "examples": {
+              "InvalidRequest": {
+                "summary": "คำขอไม่ถูกต้อง",
+                "value": {
+                  "code": "invalid_request",
+                  "message": "Invalid request"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedOTP": {
+        "description": "ไม่ได้รับอนุญาต (รูปแบบ OTP)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OTPErrorResponseDto"
+            },
+            "examples": {
+              "Unauthorized": {
+                "summary": "ไม่ได้รับอนุญาต",
+                "value": {
+                  "code": "unauthorized",
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaymentRequiredOTP": {
+        "description": "เครดิตไม่เพียงพอ (รูปแบบ OTP)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OTPErrorResponseDto"
+            },
+            "examples": {
+              "InsufficientCredit": {
+                "summary": "เครดิตไม่เพียงพอ",
+                "value": {
+                  "code": "error_insufficient_credit",
+                  "message": "error insufficient credit"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundOTP": {
+        "description": "ไม่พบข้อมูล (รูปแบบ OTP)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OTPErrorResponseDto"
+            },
+            "examples": {
+              "NotFound": {
+                "summary": "ไม่พบข้อมูล",
+                "value": {
+                  "code": "not_found",
+                  "message": "Not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerErrorOTP": {
+        "description": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์ (รูปแบบ OTP)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OTPErrorResponseDto"
+            },
+            "examples": {
+              "ServerError": {
+                "summary": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
+                "value": {
+                  "code": "Internal_server_error",
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-tagGroups": [
+    {
+      "name": "SMS API",
+      "tags": [
+        "sms-messaging",
+        "sms-errors"
+      ]
+    },
+    {
+      "name": "Email API",
+      "tags": [
+        "email-messaging",
+        "email-attachment",
+        "email-errors"
+      ]
+    },
+    {
+      "name": "OTP API",
+      "tags": [
+        "otp-sms",
+        "otp-email"
+      ]
+    }
+  ]
+}

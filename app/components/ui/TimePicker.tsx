@@ -89,7 +89,7 @@ export function TimePickerField({
           className={`
             w-full h-11 flex items-center bg-slate-50 border rounded-2xl transition-all px-4 py-2.5
             ${disabled ? 'opacity-50 bg-slate-100 cursor-not-allowed' : ''}
-            ${isOpen ? 'bg-white border-blue-600 ring-4 ring-blue-600/10 shadow-xs' : 'border-slate-200 hover:border-slate-300 hover:bg-white'}
+            ${isOpen ? 'bg-white border-brand-primary ring-4 ring-blue-600/10 shadow-xs' : 'border-slate-200 hover:border-slate-300 hover:bg-white'}
           `}
         >
           {/* Direct Typeable Input */}
@@ -110,7 +110,7 @@ export function TimePickerField({
             type="button"
             disabled={disabled}
             onClick={() => setIsOpen(!isOpen)}
-            className="text-slate-400 hover:text-blue-600 transition-colors cursor-pointer shrink-0 ml-1"
+            className="text-slate-400 hover:text-brand-primary transition-colors cursor-pointer shrink-0 ml-1"
             title="เลือก/ปรับเวลา"
           >
             <Clock size={16} />
@@ -131,7 +131,7 @@ export function TimePickerField({
                 <button
                   type="button"
                   onClick={() => adjustMinutes(1)}
-                  className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-xl flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 bg-brand-primary-light hover:bg-brand-primary-light text-brand-primary-hover font-bold rounded-xl flex items-center justify-center gap-1 transition-colors cursor-pointer"
                 >
                   <Plus size={13} /> 1 นาที
                 </button>
@@ -179,8 +179,8 @@ export function TimePickerField({
                     className={`
                       text-[11px] font-mono px-2.5 py-1 rounded-xl font-bold transition-all cursor-pointer
                       ${selectedValue === qt
-                        ? 'bg-blue-600 text-white shadow-xs'
-                        : 'bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-700'
+                        ? 'bg-brand-primary text-white shadow-xs'
+                        : 'bg-slate-100 hover:bg-brand-primary-light text-slate-700 hover:text-brand-primary-hover'
                       }
                     `}
                   >

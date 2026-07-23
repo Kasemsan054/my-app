@@ -1,6 +1,7 @@
 import prisma from '@/app/lib/prisma'
 import { requireAuth } from '@/app/lib/auth'
 import SettingsClientPage from './SettingsClientPage'
+import WithMaintenance from '../components/WithMaintenance'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,5 +13,9 @@ export default async function SettingsPage() {
     prisma.product.findMany({ orderBy: { brand: 'asc' } })
   ])
 
-  return <SettingsClientPage initialCompanies={JSON.parse(JSON.stringify(companies))} initialProducts={JSON.parse(JSON.stringify(products))} />
+  return (
+    <WithMaintenance path="/settings">
+      <SettingsClientPage initialCompanies={JSON.parse(JSON.stringify(companies))} initialProducts={JSON.parse(JSON.stringify(products))} />
+    </WithMaintenance>
+  )
 }

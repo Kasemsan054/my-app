@@ -88,7 +88,7 @@ export default function TicketStatusModal({
         {/* Status Selection */}
         <div className="space-y-3">
           <label className="block text-sm font-semibold text-slate-900 flex items-center gap-1.5">
-            <Wrench size={16} className="text-blue-600" /> เลือกสถานะใหม่
+            <Wrench size={16} className="text-brand-primary" /> เลือกสถานะใหม่
           </label>
           <div className="space-y-2">
             {STATUS_OPTIONS.map((st) => (
@@ -97,7 +97,7 @@ export default function TicketStatusModal({
                 className={`
                   flex items-center justify-between p-3.5 rounded-2xl border cursor-pointer transition-all
                   ${currentStatus === st
-                    ? 'border-blue-600 bg-blue-50/60 font-bold shadow-xs'
+                    ? 'border-brand-primary bg-brand-primary-light/60 font-bold shadow-xs'
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                   }
                 `}
@@ -109,7 +109,7 @@ export default function TicketStatusModal({
                     value={st}
                     checked={currentStatus === st}
                     onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                    className="w-4 h-4 text-brand-primary focus:ring-blue-500"
                   />
                   <span className="text-sm text-slate-800">{st}</span>
                 </div>

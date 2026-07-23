@@ -4,13 +4,13 @@ import type { NextRequest } from 'next/server'
 export function proxy(request: NextRequest) {
   const sessionCookie = request.cookies.get('session_userid')?.value
   const { pathname } = request.nextUrl
-
   // Skip static assets, Next.js internal files, and public images
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
     pathname.startsWith('/static') ||
-    pathname.includes('.')
+    pathname.includes('.') ||
+    pathname.startsWith('/maintenance')
   ) {
     const res = NextResponse.next()
     applySecurityHeaders(res)

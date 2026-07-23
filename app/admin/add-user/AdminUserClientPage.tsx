@@ -245,7 +245,7 @@ export default function AdminUserClientPage({ users, currentUser }: AdminUserCli
                       <td className="py-4 px-6 font-semibold text-slate-800">
                         {usr.name}
                         {usr.employeeId === currentUser.employeeId && (
-                          <span className="ml-2 text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-md">คุณ</span>
+                          <span className="ml-2 text-[10px] bg-brand-primary-light text-brand-primary-hover font-bold px-2 py-0.5 rounded-md">คุณ</span>
                         )}
                       </td>
 

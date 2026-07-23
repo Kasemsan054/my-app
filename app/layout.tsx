@@ -12,7 +12,7 @@ const promptFont = Prompt({
 });
 
 export const metadata: Metadata = {
-  title: "ระบบออกใบรับคืนอุปกรณ์ | QSP Service System",
+  title: "QSP Service System",
   description: "ระบบบริหารจัดการและออกใบรับคืนอุปกรณ์ซ่อม สำหรับองค์กร",
 };
 
