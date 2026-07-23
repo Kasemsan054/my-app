@@ -81,7 +81,7 @@ export async function submitReturnTicket(formData: FormData) {
       }
     })
 
-    // ส่งอีเมลถ้ามีการระบุ
+    // ส่งอีเมลถ้ามีการระบุหรือมี default recipient
     let emailWarning = ''
     if (effectiveRecipient) {
       try {
@@ -107,8 +107,8 @@ export async function submitReturnTicket(formData: FormData) {
             DATE: new Date(receiveDateStr).toLocaleDateString('th-TH'),
             COMPANY_NAME: company.branch && company.branch !== 'สำนักงานใหญ่' ? `${company.name} (${company.branch})` : company.name,
             CONTACT_INFO: `${contact.name} (${contact.phone})`,
-            PRODUCT: `${product.brand} - ${product.model} (S/N: ${serialNo})`,
-            SYMPTOM: problemSymptom,
+            PRODUCT: `${product.brand} - ${product.model} (S/N: ${serialNo || '-'})`,
+            SYMPTOM: problemSymptom || "-",
             OTHER: includedAccessories || "-",
             STATUS: "รอเปิดงานซ่อม"
           },
@@ -119,6 +119,8 @@ export async function submitReturnTicket(formData: FormData) {
         const err = emailError as Error
         emailWarning = ` (ระบบส่งอีเมลไม่สำเร็จ: ${err.message})`
       }
+    } else {
+      emailWarning = ` (ไม่ได้ส่งอีเมลเนื่องจากไม่มีการระบุอีเมลผู้รับและยังไม่ได้ตั้งค่าอีเมลเริ่มต้นในระบบ)`
     }
 
     revalidatePath('/')

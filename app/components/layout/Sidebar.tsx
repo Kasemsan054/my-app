@@ -7,6 +7,7 @@ import { FilePlus, FileText, SlidersHorizontal, LogOut, Wrench, ChevronRight, Ke
 import { Tooltip } from '@/app/components/ui'
 import { logoutAction } from '@/app/actions/authActions'
 import { appConfig } from '@/app/config/app.config'
+import { CURRENT_VERSION } from '@/app/config/versionConfig'
 
 interface SidebarProps {
   currentUser?: {
@@ -18,9 +19,11 @@ interface SidebarProps {
   onClose?: () => void
   isCollapsed?: boolean
   onToggleCollapse?: () => void
+  onOpenVersionModal?: () => void
+  hasUnreadVersion?: boolean
 }
 
-export default function Sidebar({ currentUser, isOpen, onClose, isCollapsed, onToggleCollapse }: SidebarProps) {
+export default function Sidebar({ currentUser, isOpen, onClose, isCollapsed, onToggleCollapse, onOpenVersionModal, hasUnreadVersion }: SidebarProps) {
   const pathname = usePathname()
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [isLogoHovered, setIsLogoHovered] = useState(false)
@@ -127,7 +130,23 @@ export default function Sidebar({ currentUser, isOpen, onClose, isCollapsed, onT
             </div>
 
             <div className={`transition-all duration-300 overflow-hidden ${isCollapsed ? 'lg:opacity-0 lg:max-w-0 lg:ml-0' : 'opacity-100 max-w-xs'}`}>
-              <h1 className="font-bold text-base text-white leading-tight tracking-wide whitespace-nowrap">{appConfig.ui.sidebar.title}</h1>
+              <div className="flex items-center gap-1.5">
+                <h1 className="font-bold text-base text-white leading-tight tracking-wide whitespace-nowrap">{appConfig.ui.sidebar.title}</h1>
+                {onOpenVersionModal && (
+                  <button
+                    onClick={onOpenVersionModal}
+                    className="relative text-[10px] font-mono font-bold bg-slate-800 hover:bg-slate-700 text-brand-primary border border-brand-primary/30 px-1.5 py-0.5 rounded-md transition-colors cursor-pointer"
+                  >
+                    v{CURRENT_VERSION}
+                    {hasUnreadVersion && (
+                      <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                    )}
+                  </button>
+                )}
+              </div>
               <p className="text-[11px] text-slate-400 font-medium whitespace-nowrap">{appConfig.ui.sidebar.subtitle}</p>
             </div>
           </div>
@@ -162,45 +181,45 @@ export default function Sidebar({ currentUser, isOpen, onClose, isCollapsed, onT
           {navItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href))
             const Icon = item.icon
-              const linkContent = (
-                <Link
-                  href={item.href}
-                  onClick={onClose}
-                  className={`
-                    flex items-center gap-3 px-3 py-3 rounded-2xl transition-all duration-200 group relative w-full
-                    ${isActive 
-                      ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30 font-semibold' 
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                    }
-                    ${isCollapsed ? 'justify-center' : 'justify-start'}
-                  `}
-                >
-                  <Icon size={20} className={isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'} />
-                  
-                  {!isCollapsed && (
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm truncate">{item.label}</div>
-                      <div className={`text-[10px] truncate mt-0.5 ${isActive ? 'text-brand-primary-border' : 'text-slate-500'}`}>
-                        {item.description}
-                      </div>
+            const linkContent = (
+              <Link
+                href={item.href}
+                onClick={onClose}
+                className={`
+                  flex items-center gap-3 px-3 py-3 rounded-2xl transition-all duration-200 group relative w-full
+                  ${isActive 
+                    ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30 font-semibold' 
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  }
+                  ${isCollapsed ? 'justify-center' : 'justify-start'}
+                `}
+              >
+                <Icon size={20} className={isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'} />
+                
+                {!isCollapsed && (
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm truncate">{item.label}</div>
+                    <div className={`text-[10px] truncate mt-0.5 ${isActive ? 'text-brand-primary-border' : 'text-slate-500'}`}>
+                      {item.description}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {isActive && !isCollapsed && (
-                    <ChevronRight size={16} className="text-white opacity-50 shrink-0" />
-                  )}
-                </Link>
-              )
+                {isActive && !isCollapsed && (
+                  <ChevronRight size={16} className="text-white opacity-50 shrink-0" />
+                )}
+              </Link>
+            )
 
-              return isCollapsed ? (
-                <Tooltip key={item.href} content={item.label} position="right" wrapperClassName="w-full flex">
-                  {linkContent}
-                </Tooltip>
-              ) : (
-                <div key={item.href}>{linkContent}</div>
-              )
-            })}
-          </div>
+            return isCollapsed ? (
+              <Tooltip key={item.href} content={item.label} position="right" wrapperClassName="w-full flex">
+                {linkContent}
+              </Tooltip>
+            ) : (
+              <div key={item.href}>{linkContent}</div>
+            )
+          })}
+        </div>
 
         {/* User Profile & Logout */}
         {currentUser && (

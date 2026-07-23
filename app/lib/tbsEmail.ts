@@ -9,10 +9,14 @@ export async function uploadAttachment(pdfBuffer: Buffer, fileName: string) {
   const authHeader = `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString('base64')}`
 
   const formData = new FormData()
-  // Append as a Blob/File. Node's fetch supports Blob.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const blob = new Blob([pdfBuffer as any], { type: 'application/pdf' })
-  formData.append('file', blob, fileName)
+  if (typeof File !== 'undefined') {
+    const file = new File([pdfBuffer as any], fileName, { type: 'application/pdf' })
+    formData.append('file', file)
+  } else {
+    const blob = new Blob([pdfBuffer as any], { type: 'application/pdf' })
+    formData.append('file', blob, fileName)
+  }
 
   const response = await fetch('https://email-api.thaibulksms.com/email/v1/email-attachment/media', {
     method: 'POST',
@@ -46,8 +50,8 @@ export async function sendReturnTicketEmail(
   const apiKey = process.env.TBS_API_KEY
   const apiSecret = process.env.TBS_API_SECRET
   const templateUuid = process.env.TBS_EMAIL_TEMPLATE_UUID
-  const fromEmail = senderOverride?.fromEmail || process.env.TBS_MAIL_FROM_EMAIL
-  const fromName = senderOverride?.fromName || process.env.TBS_MAIL_FROM_NAME
+  const fromEmail = (senderOverride?.fromEmail && senderOverride.fromEmail.trim()) || process.env.TBS_MAIL_FROM_EMAIL || ''
+  const fromName = (senderOverride?.fromName && senderOverride.fromName.trim()) || process.env.TBS_MAIL_FROM_NAME || 'Service'
 
   if (!apiKey || !apiSecret || !templateUuid || !fromEmail) {
     throw new Error('TBS credentials/template configuration is missing in environment variables')

@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { Menu, Calendar, Clock } from 'lucide-react'
+import { Menu, Calendar, Clock, Sparkles } from 'lucide-react'
 import { Tooltip } from '@/app/components/ui'
+import { CURRENT_VERSION } from '@/app/config/versionConfig'
 
 interface NavbarProps {
   currentUser?: {
@@ -13,6 +14,8 @@ interface NavbarProps {
   onOpenSidebar: () => void
   isCollapsed?: boolean
   onToggleCollapse?: () => void
+  onOpenVersionModal?: () => void
+  hasUnreadVersion?: boolean
 }
 
 const THAI_MONTHS = [
@@ -20,7 +23,7 @@ const THAI_MONTHS = [
   'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
 ]
 
-export default function Navbar({ onOpenSidebar }: NavbarProps) {
+export default function Navbar({ onOpenSidebar, onOpenVersionModal, hasUnreadVersion }: NavbarProps) {
   const [dateTimeStr, setDateTimeStr] = useState<string>('')
 
   useEffect(() => {
@@ -66,8 +69,27 @@ export default function Navbar({ onOpenSidebar }: NavbarProps) {
         </div>
       </div>
 
-      {/* Right Column Spacer for Visual Balance */}
-      <div className="w-10 sm:w-32 shrink-0" />
+      {/* Right Column: Version Badge Button */}
+      <div className="flex items-center justify-end w-auto sm:w-32 shrink-0">
+        {onOpenVersionModal && (
+          <Tooltip content="ดูรายละเอียดการอัปเดตและประวัติเวอร์ชัน (Changelog)" position="bottom" align="right">
+            <button
+              onClick={onOpenVersionModal}
+              className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-brand-primary/10 text-slate-700 hover:text-brand-primary border border-slate-200 hover:border-brand-primary/30 transition-all font-mono text-xs font-bold cursor-pointer group shadow-2xs"
+            >
+              <Sparkles size={13} className="text-brand-primary group-hover:scale-110 transition-transform" />
+              <span>v{CURRENT_VERSION}</span>
+
+              {hasUnreadVersion && (
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-white"></span>
+                </span>
+              )}
+            </button>
+          </Tooltip>
+        )}
+      </div>
     </header>
   )
 }
